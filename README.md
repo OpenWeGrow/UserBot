@@ -16,8 +16,6 @@ Temperature Sensor - Analog Input A0 <br />
 <br />
 You can find the schematic below.<br />
 
-ftp://jmelo%2540open-grow.co.uk@ukss8.layerip.com/shop/img/opengrowimgs/schematics/description/UserBot-Example-Schematic.png
-
 ![Fritzing Schematic for UserBot Example](https://www.open-grow.co.uk/shop/img/opengrowimgs/schematics/description/UserBot-Example-Schematic.png)
-And below an overview of the GroLab™ UserBot Shield for Arduino<br />
+<br />And below an overview of the GroLab™ UserBot Shield for Arduino<br />
 ![alt text](https://www.open-grow.co.uk/shop/img/opengrowimgs/schematics/description/UserBot_Info.png)
