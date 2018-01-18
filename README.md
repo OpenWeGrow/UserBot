@@ -1,4 +1,4 @@
-# UserBot
+# GroLab™ UserBot
 Source code for Arduino with GroLab UserBot Shield to interface with GroNode.
 The code use as example the sampling of 3 Buttons and a LM35 Temperature sensor.
 <br />
