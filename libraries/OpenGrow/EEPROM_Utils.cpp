@@ -105,7 +105,31 @@ void EEPROMUtils::resetGroBot2Defaults(void)
         fwVersion[1] = FW_2;
         fwVersion[2] = FW_3;
         fwVersion[3] = FW_4;
+		
+		for(ei=0;ei<MAX_INPUTS;ei++) //Clear All Inputs to default Value
+		{	
+			memadd = EEPROM_INPUT1_START + (ei*18);
+			EEPROM.write(memadd, inputs[ei].type);   //Set Input Type
+			EEPROM.write(memadd+1, OPEN_GROWS_DEFAULT);   		//Set GrowRoom ID
+			EEPROM.write(memadd+2, OPEN_GROWS_DEFAULT);		//Set Grow ID
+			
+			eeprom_write_block(inputs[ei].name, (void *)(memadd+3), sizeof(inputs[ei].name));			
+			
+		}
+		
+		for(ei=0;ei<MAX_OUTPUTS;ei++) //Clear all Outputs from memory
+		{
+			memadd = EEPROM_OUTPUT1_START + (ei*18);
+			EEPROM.write(memadd, outputs[ei].type);  //Set Output Type
+			EEPROM.write(memadd+1, OPEN_GROWS_DEFAULT);  		//Set Default GrowRoom ID
+			EEPROM.write(memadd+2, OPEN_GROWS_DEFAULT);  		//Set Default Grow ID
+			eeprom_write_block(outputs[ei].name, (void *)(memadd+3), sizeof(outputs[ei].name));
+			
+		}
 
+		memset(name,0x00, sizeof(name));
+		strcpy(name,"New UserBot");		
+		
 		eeprom_write_block(name, (void *)(EEPROM_BOT_NAME), sizeof(name)); 
         eeprom_write_block(fwVersion, (void *)(FW_EEPROM_START), sizeof(fwVersion));
 		Serial.println(F("RST"));
