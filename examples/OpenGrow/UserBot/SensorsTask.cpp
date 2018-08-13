@@ -23,6 +23,7 @@ sensorsMachineState snsState;
 int time= 0;
 
 
+
 SensorsTask::SensorsTask(void)
 {
 	snsState = INIT_SENSORS;
