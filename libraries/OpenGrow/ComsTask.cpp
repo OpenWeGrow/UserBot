@@ -132,13 +132,18 @@ void ComsTask::vGoComsTask(RS485 comPort)
                 slaveAddress = EEPROM.read(EEPRROM_SLAVEADDRESS);    //If we already have a grow definition read it form memory
             #endif
            
-			masterID     = EEPROM.read(EEPROM_MASTER_ID);    //If we already have a masterID definition read it form memory
-			botID        = EEPROM.read(EEPROM_BOT_ID);    //If we already have a botID definition read it form memory
-            
-			#if !defined(RS485_INTERFACE) && (defined(DEBUGCOMSTASK) || defined(GENERALDEBUG))	
-				Serial.print("My Slave is: ");
-				Serial.println(slaveAddress,DEC);					
-			#endif				
+			masterID     = EEPROM.read(EEPROM_MASTER_ID);    //If we already have a grow definition read it form memory
+			botID        = EEPROM.read(EEPROM_BOT_ID);    //If we already have a grow definition read it form memory
+			
+            //Protection for Wrong Master ID
+            if(masterID==0 || masterID>5)
+            {
+                masterID = 5;
+                #if !defined(RS485_INTERFACE) && (defined(DEBUGCOMSTASK) || defined(GENERALDEBUG))	
+                    Serial.print("MasterID Reseted");                  			
+                #endif	
+            }
+						
 		}
 		else
 		{

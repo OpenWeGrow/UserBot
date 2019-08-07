@@ -47,6 +47,18 @@
 #define BUTTON_PIN2   		     4
 #define TEMP_INDEX   		     3    //Position in inputs[3] 
 #define TEMP_PIN   		         A0   //Pin that actually samples the sensor
+#define INPUT_INDEX4   	    	 4    //To be defined by the user if more inputs are to be used.
+#define INPUT_PIN4      	 	 0
+#define INPUT_INDEX5   	    	 5    
+#define INPUT_PIN5      	 	 0
+#define INPUT_INDEX6   	    	 6    
+#define INPUT_PIN6       	 	 0
+#define INPUT_INDEX7   	    	 7    
+#define INPUT_PIN7      	 	 0
+#define INPUT_INDEX8   	    	 8    
+#define INPUT_PIN8      	 	 0
+#define INPUT_INDEX9   	    	 9    
+#define INPUT_PIN9      	 	 0
 
 
 //Unused Outputs
