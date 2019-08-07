@@ -17,11 +17,11 @@
 //UserBot
 //Firmware V1.0.0.1 - Base Version
 //Firmware V1.0.0.2 - OpenBus implements reading of calibration factors - Mandatory!!
-//Firmware V1.0.0.3 - Suports new changes to stack
+//Firmware V1.0.0.3 - Supports new changes to stack
 //Firmware V1.0.0.4 - Serial Dump improved
 //Firmware V1.0.0.5 - Ping and Errors where not sending back the correct amount of bytes
-//Firmware V1.0.0.6 - Updated to latest coms stack and cleanned to be used in UserBot public repository
-
+//Firmware V1.0.0.6 - Updated to latest COMS stack and cleaned to be used in UserBot public repository
+//Firmware V1.0.0.7 - 
 
 
 
@@ -51,29 +51,28 @@
 
 //Unused Outputs
 //They are not used but must be defined so the ACT_WRITE_VALUE in OpenBus can implement the backoff time
-#define OUTPUT1_INDEX   	     0    //Position in inputs[0] 
-#define OUTPUT2_INDEX   	     1    //Position in inputs[0] 
-#define OUTPUT3_INDEX   	     2    //Position in inputs[0] 
-#define OUTPUT4_INDEX   	     3    //Position in inputs[0] 
-#define OUTPUT5_INDEX   	     4    //Position in inputs[0] 
-#define OUTPUT6_INDEX   	     5    //Position in inputs[0] 
-#define OUTPUT7_INDEX   	     6    //Position in inputs[0] 
-#define OUTPUT8_INDEX   	     7    //Position in inputs[0] 
-#define OUTPUT9_INDEX   	     8    //Position in inputs[0] 
-#define OUTPUT10_INDEX   	     9    //Position in inputs[0] 
+#define OUTPUT1_INDEX   	    0    //Position in outputs[0]
+#define OUTPUT1_PIN      	 	0
+#define OUTPUT2_INDEX   	    1    //Position in outputs[1]
+#define OUTPUT2_PIN   	     	0
+#define OUTPUT3_INDEX   	    2    //Position in outputs[2]
+#define OUTPUT3_PIN   	     	0
+#define OUTPUT4_INDEX   	    3    //Position in outputs[3]
+#define OUTPUT4_PIN   	     	0
+#define OUTPUT5_INDEX   	    4    //Position in outputs[4]
+#define OUTPUT5_PIN   	     	0
+#define OUTPUT6_INDEX   	    5    //Position in outputs[5]
+#define OUTPUT6_PIN   	     	0
+#define OUTPUT7_INDEX   	    6    //Position in outputs[6]
+#define OUTPUT7_PIN   	    	0
+#define OUTPUT8_INDEX   	    7    //Position in outputs[7]
+#define OUTPUT8_PIN   	     	0
+#define OUTPUT9_INDEX   	    8    //Position in outputs[8]
+#define OUTPUT9_PIN   	     	0
+#define OUTPUT10_INDEX   	    9    //Position in outputs[9]
+#define OUTPUT10_PIN   	     	0
 
 
-
-#define OUTPUT1_PIN      	 0   
-#define OUTPUT2_PIN   	     0    
-#define OUTPUT3_PIN   	     0  
-#define OUTPUT4_PIN   	     0    
-#define OUTPUT5_PIN   	     0    
-#define OUTPUT6_PIN   	     0    
-#define OUTPUT7_PIN   	     0 
-#define OUTPUT8_PIN   	     0   
-#define OUTPUT9_PIN   	     0   
-#define OUTPUT10_PIN   	     0   
 
 
 #define PERIPHERAL_INPUT   0x01
@@ -87,12 +86,12 @@
 #define USERBOT                 0x05
 
 #define SET_OFF_TIMEOUT   3 
-//Debug the code as you wish, carefull can cause memory full!!
 
-//#define DEBUGCOMSTASK     //Implements debug prinf on COMSTAK
-//#define DEBUGOPENBUS      //Implements debug prinf on COMSTAK
-//#define DEBUGRF         //Implements debug prinf on RFCOMS
-//#define GENERALDEBUG         //Implements debug prinf on RFCOMS
+//Debug the code as you wish, careful can cause memory full!!
+//#define DEBUGCOMSTASK     //Implements debug printf on COMSTAK
+//#define DEBUGOPENBUS      //Implements debug printf on COMSTAK
+//#define DEBUGRF         //Implements debug printf on RFCOMS
+//#define GENERALDEBUG         //Implements debug printf on RFCOMS
 //#define DEBUGBASIC
 
 //Module Config Variables
@@ -102,7 +101,6 @@ extern char name[15];
 extern unsigned char masterID;
 extern unsigned char botType;
 extern unsigned char botID;
-
 
 
 //Safety Shutdown variables
@@ -138,7 +136,7 @@ extern struct stOUTPUT outputs[MAX_OUTPUTS];
 extern CRC crc;
 extern unsigned char crc16 [2];
 
-   
+// ENUM used in the switch cases from SensorsTask.cpp (UserBot folder)
 enum sensorsMachineState {
   INIT_SENSORS = 0,
   GET_TEMP,	
@@ -146,30 +144,31 @@ enum sensorsMachineState {
   PRINT_OUT
 };
 extern sensorsMachineState snsState;
+
+
 //Module Default Info
-#define OPEN_DEFAULT 0x00
-#define OPEN_GROWS_DEFAULT 0x00
-#define OPEN_MASTERID_DEFAULT 0x01
-#define OPEN_BOT_ID_DEFAULT	  0xFF
-#define OPEN_SLAVEADRESS_DEFAULT	  0xFF
-#define ZERO_MINUTES 0x00
+#define OPEN_DEFAULT 				0x00
+#define OPEN_GROWS_DEFAULT 			0x00
+#define OPEN_MASTERID_DEFAULT 		0x01
+#define OPEN_BOT_ID_DEFAULT	  		0xFF
+#define OPEN_SLAVEADRESS_DEFAULT	0xFF
+#define ZERO_MINUTES 				0x00
 
-#define DEFAULT_SERIALNUMBER_0 0x00  // Default Serial Number == 5999999999;
-#define DEFAULT_SERIALNUMBER_1 0x00
-#define DEFAULT_SERIALNUMBER_2 0x00
-
-
-#define DEFAULT_SERIALNUMBER_3 USERBOT
+#define DEFAULT_SERIALNUMBER_0 		0x00  // Default Serial Number == 5999999999;
+#define DEFAULT_SERIALNUMBER_1 		0x00
+#define DEFAULT_SERIALNUMBER_2 		0x00
 
 
+#define DEFAULT_SERIALNUMBER_3 		USERBOT
 
-#define DEFAULT_SERIALNUMBER_4 0x3B
-#define DEFAULT_SERIALNUMBER_5 0x9A
-#define DEFAULT_SERIALNUMBER_6 0xC9  
-#define DEFAULT_SERIALNUMBER_7 0xFF
 
-//EEPROM_SLAVE_INIT_STATE Tells if memory was written with a slave or if we are comunicating first time with GroNode
-#define MODULE_CONFIGED  0x01
+#define DEFAULT_SERIALNUMBER_4 		0x3B
+#define DEFAULT_SERIALNUMBER_5 		0x9A
+#define DEFAULT_SERIALNUMBER_6 		0xC9  
+#define DEFAULT_SERIALNUMBER_7 		0xFF
+
+//EEPROM_SLAVE_INIT_STATE Tells if memory was written with a slave or if we are communicating first time with GroNode
+#define MODULE_CONFIGED  			0x01
 
 //EEPROM Addresses of data for safe keeping data
 #define EEPRROM_SLAVEADDRESS 		0x00
@@ -226,50 +225,53 @@ extern sensorsMachineState snsState;
     
 
 //Generic definition
-#define TYPE_INPUT      	  		0x00
-#define TYPE_OUTPUT 				0x01
-//Possible Input Peripherics
-#define OTHER_INPUT         0x01
-#define DIG_TEMPERATURE   	0x02
-#define WATER_TEMPERATURE   0x03
-#define HUMIDITY      		0x04
-#define CO2      	  		0x05
-#define LIGHT         		0x06
-#define TANKLVL_VERT  		0x07
-#define TANKLVL_HORI   		0x08
-#define MOISTURE    		0x09
-#define PH      	  		0x0A
-#define EC    		  		0x0B
-#define SMOKE      	  		0x0C
-#define MOTION        		0x0D
-#define BUTTON     	  		0x0E
-#define BATTERY_STATE 		0x0F
-#define FLOOD	    		0x10
-#define ANG_TEMPERATURE   	0x11
-#define POWER_MODE       	0x12
-#define SOIL_TEMPERATURE    0x13
-#define MOISTURE_CAP        0x14
-//Possible Status Still and Input
+#define TYPE_INPUT      	  	0x00
+#define TYPE_OUTPUT 			0x01
 
-//Possible Output Peripherics
-#define OTHER_OUTPUT        0x01
-#define LIGHT_VEG_LOW       0x02
-#define LIGHT_FLO_LOW       0x03
-#define VENTILATION_IN      0x04
-#define VENTILATION_OUT     0x05
-#define VENTILATOR          0x06
-#define WATER_PUMP          0x07
-#define WATER_FILTER        0x08
-#define AIR_PUMP            0x09
-#define ELECTROVALVE        0x0A
-#define LED                 0x0B
-#define HUMIDIFIER          0x0C
-#define DEHUMIDIFIER        0x0D
-#define LIGHT_VEG_HPS       0x0E
-#define LIGHT_FLO_HPS       0x0F
+//Possible Input Types
+#define OTHER_INPUT         	0x01
+#define DIG_TEMPERATURE   		0x02
+#define WATER_TEMPERATURE   	0x03
+#define HUMIDITY      			0x04
+#define CO2      	  			0x05
+#define LIGHT         			0x06
+#define TANKLVL_VERT  			0x07
+#define TANKLVL_HORI   			0x08
+#define MOISTURE    			0x09
+#define PH      	  			0x0A
+#define EC    		  			0x0B
+#define SMOKE      	  			0x0C
+#define MOTION        			0x0D
+#define BUTTON     	  			0x0E
+#define BATTERY_STATE 			0x0F
+#define FLOOD	    			0x10
+#define ANG_TEMPERATURE   		0x11
+#define POWER_MODE       		0x12
+#define SOIL_TEMPERATURE    	0x13
+#define MOISTURE_CAP        	0x14
+#define PRESSURE        		0x15
+
+//Possible Output Types
+#define OTHER_OUTPUT        	0x01
+#define LIGHT_HPS	        	0x02
+#define LIGHT_METAL_HALLID  	0x03
+#define VENTILATION_IN      	0x04
+#define VENTILATION_OUT     	0x05
+#define VENTILATOR          	0x06
+#define WATER_PUMP          	0x07
+#define WATER_FILTER        	0x08
+#define AIR_PUMP            	0x09
+#define ELECTROVALVE_WATER  	0x0A
+#define LED                 	0x0B
+#define HUMIDIFIER          	0x0C
+#define DEHUMIDIFIER        	0x0D
+#define LIGHT_FLUO_COMPACT  	0x0E
+#define LIGHT_LED	        	0x0F
+#define ELECTROVALVE_AIR    	0x10
+#define PERISTALTIC_PUMP    	0x11
+#define HEATER   				0x12
 //
 //Common 
-#define IO_NOT_CONNECTED 0xF0
+#define IO_NOT_CONNECTED 		0xF0
 
 /****************************************************************************/
-
