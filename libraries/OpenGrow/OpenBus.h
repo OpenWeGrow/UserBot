@@ -1,11 +1,9 @@
 /*
-*	Copyright (C) Open Grow 2014 
-*	Coders: João Melo
-*/
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
-/**
- * @file OpenBus.h
- *
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ version 2 as published by the Free Software Foundation.
  */
 
 #ifndef __OPENBUS_H__
@@ -15,13 +13,9 @@
 //Uncomment only when using Serial Port for RS-485
 //#define RS485
 
-#if defined (RF)
-	#include "RF24.h"	
-#endif
 
-#if defined(RS485_INTERFACE)
-	#include "RS485.h"	
-#endif
+#include "RF24.h"	
+
 
 //Calib Types - Used in SOILBOT for moisture and TankBot for PH and EC
 #define CALIB_HIGH     0x01
@@ -76,16 +70,12 @@
 		
 
 
-		const unsigned char ucOBSuccess              = 0xCC;
-        
+		const unsigned char ucOBSuccess              = 0xCC;        
 		const unsigned char ucOBError                = 0xDD;
-        const unsigned char ucOBBackOff              = 0xE6;
-		
+        const unsigned char ucOBBackOff              = 0xE6;		
 		const unsigned char ucOBAuthNew              = 0xA0;
 		const unsigned char ucOBAuthExists           = 0xA1;
 		const unsigned char ucOBAuthOk               = 0xA2;
-		
-
 		const unsigned char ucOBInvalidCRC           = 0xE3;
 
 		
@@ -100,19 +90,10 @@ class OpenBus
 
 	public:		
 		
-		OpenBus();
-		#ifdef RF
-			unsigned char usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RF24 comPort, unsigned char channel);
-			unsigned char usOpenBusCreateAuthFrame(unsigned char * dataOut,RF24 comPort, unsigned char channel);
-		#endif
-		#ifdef RS485_INTERFACE
-			unsigned char  usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RS485  comPort);
-			unsigned char usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 comPort);
-		#endif		
-
-		#if defined(DEBUGOPENBUS) || defined(DEBUGOPENBUS_EXTRA)
-			void printDouble(double val, unsigned char precision);
-		#endif
+		OpenBus();	
+		unsigned char usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RF24 comPort, unsigned char channel);
+		unsigned char usOpenBusCreateAuthFrame(unsigned char * dataOut,RF24 comPort, unsigned char channel);
+		
 };
 
 #endif // __OPENBUS_H__

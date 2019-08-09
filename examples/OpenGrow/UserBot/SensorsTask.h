@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -8,10 +8,6 @@
 
 #ifndef __SENSORSTASK_H__
 #define __SENSORSTASK_H__
-
-
-
-
 
 
 class SensorsTask
@@ -26,6 +22,7 @@ public:
 	SensorsTask(void);
 	void GoSensorsTask(void);
 	float calcTemp(int raw);
+	float getAnalogRead(unsigned char pin);
 
 };
 

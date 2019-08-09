@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -10,8 +10,6 @@
 
 
 #include "CRC16.h"
-#define RF
-//#define RS485_INTERFACE
 
 
 //UserBot
@@ -21,68 +19,195 @@
 //Firmware V1.0.0.4 - Serial Dump improved
 //Firmware V1.0.0.5 - Ping and Errors where not sending back the correct amount of bytes
 //Firmware V1.0.0.6 - Updated to latest COMS stack and cleaned to be used in UserBot public repository
-//Firmware V1.0.0.7 - 
+//Firmware V1.0.0.7 - Code CleanUp
+//Firmware v1.0.0.8 - Stack configuration changed so its configuration is a bit more simple - Cleared RS485 defines
 
 
 
 #define FW_1  1
 #define FW_2  0
 #define FW_3  0
-#define FW_4  7
+#define FW_4  8
+
+//Generic definition
+#define TYPE_INPUT      	  	0x00
+#define TYPE_OUTPUT 			0x01
+
+//Possible Input Types
+#define OTHER_INPUT         	0x01
+#define DIG_TEMPERATURE   		0x02
+#define WATER_TEMPERATURE   	0x03
+#define HUMIDITY      			0x04
+#define CO2      	  			0x05
+#define LIGHT         			0x06
+#define TANKLVL_VERT  			0x07
+#define TANKLVL_HORI   			0x08
+#define MOISTURE    			0x09
+#define PH      	  			0x0A
+#define EC    		  			0x0B
+#define SMOKE      	  			0x0C
+#define MOTION        			0x0D
+#define BUTTON     	  			0x0E
+#define BATTERY_STATE 			0x0F
+#define FLOOD	    			0x10
+#define ANG_TEMPERATURE   		0x11
+#define POWER_MODE       		0x12
+#define SOIL_TEMPERATURE    	0x13
+#define MOISTURE_CAP        	0x14
+#define PRESSURE        		0x15
+
+//Possible Output Types
+#define OTHER_OUTPUT        	0x01
+#define LIGHT_HPS	        	0x02
+#define LIGHT_METAL_HALLID  	0x03
+#define VENTILATION_IN      	0x04
+#define VENTILATION_OUT     	0x05
+#define VENTILATOR          	0x06
+#define WATER_PUMP          	0x07
+#define WATER_FILTER        	0x08
+#define AIR_PUMP            	0x09
+#define ELECTROVALVE_WATER  	0x0A
+#define LED                 	0x0B
+#define HUMIDIFIER          	0x0C
+#define DEHUMIDIFIER        	0x0D
+#define LIGHT_FLUO_COMPACT  	0x0E
+#define LIGHT_LED	        	0x0F
+#define ELECTROVALVE_AIR    	0x10
+#define PERISTALTIC_PUMP    	0x11
+#define HEATER   				0x12
+//
+//Common 
+#define IO_NOT_CONNECTED 		0xF0
 
 
+#define INPUT_INDEX0      	     0    //Position in inputs[0] 
+#define INPUT_INDEX1      	     1    //Position in inputs[1] 
+#define INPUT_INDEX2      	     2    //Position in inputs[2] 
+#define INPUT_INDEX3      	     3    //Position in inputs[3] 
+#define INPUT_INDEX4      	     4    //Position in inputs[4] 
+#define INPUT_INDEX5      	     5    //Position in inputs[5] 
+#define INPUT_INDEX6      	     6    //Position in inputs[6] 
+#define INPUT_INDEX7      	     7    //Position in inputs[7] 
+#define INPUT_INDEX8      	     8    //Position in inputs[8] 
+#define INPUT_INDEX9      	     9    //Position in inputs[9] 
 
-//There are two global arrays to handle all variables data
-//inputs[]/outputs[]
-//Each array has a max of 10 positions
-//For each sensor or output the user must define the index where it will stay in the respective table
-//And also a definition of the pin that has the sensor/device connected.
 
+#define OUTPUT_INDEX0      	     0    //Position in outputs[0] 
+#define OUTPUT_INDEX1      	     1    //Position in outputs[1] 
+#define OUTPUT_INDEX2      	     2    //Position in outputs[2] 
+#define OUTPUT_INDEX3      	     3    //Position in outputs[3] 
+#define OUTPUT_INDEX4      	     4    //Position in outputs[4] 
+#define OUTPUT_INDEX5      	     5    //Position in outputs[5] 
+#define OUTPUT_INDEX6      	     6    //Position in outputs[6] 
+#define OUTPUT_INDEX7      	     7    //Position in outputs[7] 
+#define OUTPUT_INDEX8      	     8    //Position in outputs[8] 
+#define OUTPUT_INDEX9      	     9    //Position in outputs[9] 
+
+
+/*
 //Used Inputs for the example
-#define BUTTON_INDEX0   	     0    //Position in inputs[0] 
-#define BUTTON_PIN0   		     2    //Pin that actually samples the button
-#define BUTTON_INDEX1            1
-#define BUTTON_PIN1   		     3
-#define BUTTON_INDEX2   	     2
-#define BUTTON_PIN2   		     4
-#define TEMP_INDEX   		     3    //Position in inputs[3] 
-#define TEMP_PIN   		         A0   //Pin that actually samples the sensor
-#define INPUT_INDEX4   	    	 4    //To be defined by the user if more inputs are to be used.
-#define INPUT_PIN4      	 	 0
-#define INPUT_INDEX5   	    	 5    
-#define INPUT_PIN5      	 	 0
-#define INPUT_INDEX6   	    	 6    
-#define INPUT_PIN6       	 	 0
-#define INPUT_INDEX7   	    	 7    
-#define INPUT_PIN7      	 	 0
-#define INPUT_INDEX8   	    	 8    
-#define INPUT_PIN8      	 	 0
-#define INPUT_INDEX9   	    	 9    
-#define INPUT_PIN9      	 	 0
+#define INPUT_INDEX0      	     0    //Position in inputs[0] 
+#define INPUT_PIN0   		     2    //Pin that actually samples the button
+#define INPUT_PIN0_TYPE          BUTTON
+#define INPUT_PIN0_NAME          "Button 1"
 
+#define INPUT_INDEX1      	     1    //Position in inputs[1] 
+#define INPUT_PIN1  		     3    //Pin that actually samples the button
+#define INPUT_PIN1_TYPE          BUTTON
+#define INPUT_PIN1_NAME          "Button 2"
+
+#define INPUT_INDEX2     	     2    //Position in inputs[2] 
+#define INPUT_PIN2 		     	 4    //Pin that actually samples the button
+#define INPUT_PIN2_TYPE          BUTTON
+#define INPUT_PIN2_NAME          "Button 3"
+
+#define INPUT_INDEX3     	     3    //Position in inputs[3] 
+#define INPUT_PIN3   		     A0    //Pin that actually samples the button
+#define INPUT_PIN3_TYPE          DIG_TEMPERATURE
+#define INPUT_PIN3_NAME          "Temperature"
+
+#define INPUT_INDEX4      	     4    //Position in inputs[4] 
+#define INPUT_PIN4   		     0    //Pin that actually samples the button
+#define INPUT_PIN4_TYPE          OPEN_DEFAULT
+#define INPUT_PIN4_NAME          "null"
+
+#define INPUT_INDEX5      	     5    //Position in inputs[5] 
+#define INPUT_PIN5   		     0    //Pin that actually samples the button
+#define INPUT_PIN5_TYPE          OPEN_DEFAULT
+#define INPUT_PIN5_NAME          "null"
+
+#define INPUT_INDEX6     	     6    //Position in inputs[6] 
+#define INPUT_PIN6   		     0    //Pin that actually samples the button
+#define INPUT_PIN6_TYPE          OPEN_DEFAULT
+#define INPUT_PIN6_NAME          "null"
+
+#define INPUT_INDEX7      	     7    //Position in inputs[7] 
+#define INPUT_PIN7   		     0    //Pin that actually samples the button
+#define INPUT_PIN7_TYPE          OPEN_DEFAULT
+#define INPUT_PIN7_NAME          "null"
+
+#define INPUT_INDEX8      	     8    //Position in inputs[8] 
+#define INPUT_PIN8   		     0    //Pin that actually samples the button
+#define INPUT_PIN8_TYPE          OPEN_DEFAULT
+#define INPUT_PIN8_NAME          "null"
+
+#define INPUT_INDEX9      	     9    //Position in inputs[9] 
+#define INPUT_PIN9   		     0    //Pin that actually samples the button
+#define INPUT_PIN9_TYPE          OPEN_DEFAULT
+#define INPUT_PIN9_NAME          "null"
 
 //Unused Outputs
 //They are not used but must be defined so the ACT_WRITE_VALUE in OpenBus can implement the backoff time
-#define OUTPUT1_INDEX   	    0    //Position in outputs[0]
-#define OUTPUT1_PIN      	 	0
-#define OUTPUT2_INDEX   	    1    //Position in outputs[1]
-#define OUTPUT2_PIN   	     	0
-#define OUTPUT3_INDEX   	    2    //Position in outputs[2]
-#define OUTPUT3_PIN   	     	0
-#define OUTPUT4_INDEX   	    3    //Position in outputs[3]
-#define OUTPUT4_PIN   	     	0
-#define OUTPUT5_INDEX   	    4    //Position in outputs[4]
-#define OUTPUT5_PIN   	     	0
-#define OUTPUT6_INDEX   	    5    //Position in outputs[5]
-#define OUTPUT6_PIN   	     	0
-#define OUTPUT7_INDEX   	    6    //Position in outputs[6]
-#define OUTPUT7_PIN   	    	0
-#define OUTPUT8_INDEX   	    7    //Position in outputs[7]
-#define OUTPUT8_PIN   	     	0
-#define OUTPUT9_INDEX   	    8    //Position in outputs[8]
-#define OUTPUT9_PIN   	     	0
-#define OUTPUT10_INDEX   	    9    //Position in outputs[9]
-#define OUTPUT10_PIN   	     	0
+
+#define OUTPUT_INDEX0      	     0    //Position in outputs[0] 
+#define OUTPUT_PIN0   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN0_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN0_NAME         "null"
+
+#define OUTPUT_INDEX1      	     1    //Position in outputs[1] 
+#define OUTPUT_PIN1  		     0    //Pin that actually acts as output
+#define OUTPUT_PIN1_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN1_NAME         "null"
+
+#define OUTPUT_INDEX2     	     2    //Position in outputs[2] 
+#define OUTPUT_PIN2 		     0    //Pin that actually acts as output
+#define OUTPUT_PIN2_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN2_NAME         "null"
+
+#define OUTPUT_INDEX3     	     3    //Position in outputs[3] 
+#define OUTPUT_PIN3   		     0   //Pin that actually acts as output
+#define OUTPUT_PIN3_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN3_NAME         "null"
+
+#define OUTPUT_INDEX4      	     4    //Position in outputs[4] 
+#define OUTPUT_PIN4   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN4_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN4_NAME         "null"
+
+#define OUTPUT_INDEX5      	     5    //Position in outputs[5] 
+#define OUTPUT_PIN5   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN5_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN5_NAME         "null"
+
+#define OUTPUT_INDEX6     	     6    //Position in outputs[6] 
+#define OUTPUT_PIN6   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN6_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN6_NAME         "null"
+
+#define OUTPUT_INDEX7      	     7    //Position in outputs[7] 
+#define OUTPUT_PIN7   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN7_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN7_NAME         "null"
+
+#define OUTPUT_INDEX8      	     8    //Position in outputs[8] 
+#define OUTPUT_PIN8   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN8_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN8_NAME         "null"
+
+#define OUTPUT_INDEX9      	     9    //Position in outputs[9] 
+#define OUTPUT_PIN9   		     0    //Pin that actually acts as output
+#define OUTPUT_PIN9_TYPE         OPEN_DEFAULT
+#define OUTPUT_PIN9_NAME         "null"*/
 
 
 
@@ -125,8 +250,7 @@ extern unsigned long shutdownTimeout;
     
 struct stINPUT {
 	unsigned char type;
-	unsigned char growRoomID;
-	unsigned char growID;
+	unsigned char arduinoPin;
 	double value;
 	char  name [15];
     unsigned long sampleTime;
@@ -134,8 +258,7 @@ struct stINPUT {
 
 struct stOUTPUT {
 	unsigned char type;
-	unsigned char growRoomID;
-	unsigned char growID;
+	unsigned char arduinoPin;
 	unsigned char speed;
 	unsigned char value;
 	char name [15];
@@ -153,7 +276,7 @@ enum sensorsMachineState {
   INIT_SENSORS = 0,
   GET_TEMP,	
   GET_IOS,
-  PRINT_OUT
+  ACT_ON_IOS
 };
 extern sensorsMachineState snsState;
 
@@ -236,54 +359,5 @@ extern sensorsMachineState snsState;
 #define EEPROM_OUT10_BACKOFF_TIME        0x1F9  
     
 
-//Generic definition
-#define TYPE_INPUT      	  	0x00
-#define TYPE_OUTPUT 			0x01
-
-//Possible Input Types
-#define OTHER_INPUT         	0x01
-#define DIG_TEMPERATURE   		0x02
-#define WATER_TEMPERATURE   	0x03
-#define HUMIDITY      			0x04
-#define CO2      	  			0x05
-#define LIGHT         			0x06
-#define TANKLVL_VERT  			0x07
-#define TANKLVL_HORI   			0x08
-#define MOISTURE    			0x09
-#define PH      	  			0x0A
-#define EC    		  			0x0B
-#define SMOKE      	  			0x0C
-#define MOTION        			0x0D
-#define BUTTON     	  			0x0E
-#define BATTERY_STATE 			0x0F
-#define FLOOD	    			0x10
-#define ANG_TEMPERATURE   		0x11
-#define POWER_MODE       		0x12
-#define SOIL_TEMPERATURE    	0x13
-#define MOISTURE_CAP        	0x14
-#define PRESSURE        		0x15
-
-//Possible Output Types
-#define OTHER_OUTPUT        	0x01
-#define LIGHT_HPS	        	0x02
-#define LIGHT_METAL_HALLID  	0x03
-#define VENTILATION_IN      	0x04
-#define VENTILATION_OUT     	0x05
-#define VENTILATOR          	0x06
-#define WATER_PUMP          	0x07
-#define WATER_FILTER        	0x08
-#define AIR_PUMP            	0x09
-#define ELECTROVALVE_WATER  	0x0A
-#define LED                 	0x0B
-#define HUMIDIFIER          	0x0C
-#define DEHUMIDIFIER        	0x0D
-#define LIGHT_FLUO_COMPACT  	0x0E
-#define LIGHT_LED	        	0x0F
-#define ELECTROVALVE_AIR    	0x10
-#define PERISTALTIC_PUMP    	0x11
-#define HEATER   				0x12
-//
-//Common 
-#define IO_NOT_CONNECTED 		0xF0
 
 /****************************************************************************/

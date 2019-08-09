@@ -1,21 +1,16 @@
 /*
-*	Copyright (C) Open Grow 2014 
-*	Coders: João Melo
-*/
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
-/**
- * @file RFTask.h
- *
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ version 2 as published by the Free Software Foundation.
  */
 
 #ifndef __SERIALTASK_H__
 #define __SERIALTASK_H__
 #include "RF24.h"
-//extern unsigned long sensorCalibValue;
 
-/**
- * State Machine Enum
- */
+
 extern unsigned short memadd;
  
  enum serialMachineState {
@@ -36,11 +31,8 @@ public:
 	SerialTask(void);
 	void vGoSerialTask(RF24 comPort);	
 	void printDisclamer();
-	void reset_ParamsPH(void);
-	void reset_ParamsEC(void);
-    void printBotData(void);
 	
 };
 
-#endif // __COMSTASK_H__
+#endif // __SERIALTASK_H__
 /****************************************************************************/

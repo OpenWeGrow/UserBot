@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -51,29 +51,28 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 	EEPROM.write(EEPROM_BOT_TYPE, USERBOT); //Save Module Type
 
 	strcpy(name,"User Bot");
-
-	//Example of configuration 
-	//Define names and types
-	inputs[0].type = BUTTON;
-	strcpy(inputs[0].name,"Button1");
-	inputs[1].type = BUTTON;
-	strcpy(inputs[1].name,"Button2");
-	inputs[2].type = BUTTON;
-	strcpy(inputs[2].name,"Button3");
-	inputs[3].type = DIG_TEMPERATURE;
-	strcpy(inputs[3].name,"Temperature");
-
-	//Clear unused IO's
-	for(ei=4;ei<10;ei++)
-	{
-		inputs[ei].type = OPEN_DEFAULT;
-		strcpy(inputs[ei].name,"null");
-	}
-	for(ei=0;ei<10;ei++)
-	{
-		outputs[ei].type = OPEN_DEFAULT;
-		strcpy(outputs[ei].name,"null");
-	}
+	
+	strcpy(inputs[INPUT_INDEX0].name,"Input 1");
+	strcpy(inputs[INPUT_INDEX1].name,"Input 2");
+	strcpy(inputs[INPUT_INDEX2].name,"Input 3");
+	strcpy(inputs[INPUT_INDEX3].name,"Input 4");
+	strcpy(inputs[INPUT_INDEX4].name,"Input 5");
+	strcpy(inputs[INPUT_INDEX5].name,"Input 6");
+	strcpy(inputs[INPUT_INDEX6].name,"Input 7");
+	strcpy(inputs[INPUT_INDEX7].name,"Input 8");
+	strcpy(inputs[INPUT_INDEX8].name,"Input 9");
+	strcpy(inputs[INPUT_INDEX9].name,"Input 10");	
+	
+	strcpy(outputs[OUTPUT_INDEX0].name,"Output 1");
+	strcpy(outputs[OUTPUT_INDEX1].name,"Output 2");
+	strcpy(outputs[OUTPUT_INDEX2].name,"Output 3");
+	strcpy(outputs[OUTPUT_INDEX3].name,"Output 4");
+	strcpy(outputs[OUTPUT_INDEX4].name,"Output 5");
+	strcpy(outputs[OUTPUT_INDEX5].name,"Output 6");
+	strcpy(outputs[OUTPUT_INDEX6].name,"Output 7");
+	strcpy(outputs[OUTPUT_INDEX7].name,"Output 8");
+	strcpy(outputs[OUTPUT_INDEX8].name,"Output 9");
+	strcpy(outputs[OUTPUT_INDEX9].name,"Output 10");	
 	
 	//If you need calibration parameters you can use the structure below to save those parameters on the EEPROM
 	CalibParams.timeMax = 700;

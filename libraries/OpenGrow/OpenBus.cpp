@@ -1,17 +1,16 @@
 /*
-*	Copyright (C) Open Grow 2014 
-*	Coders: João Melo
-*/
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ version 2 as published by the Free Software Foundation.
+ */
 #include "GroBot_Variables.h"
 
-#ifdef RF	
-	#include "RF24.h"		
-#endif
+#include "RF24.h"		
 
-#ifdef RS485_INTERFACE	
-	//#include "HardwareSerial.h"		
-#endif
+
+
 
 #include "OpenBus.h"
 #include "Arduino.h"
@@ -45,12 +44,7 @@ OpenBus::OpenBus()
 
 }
 
-#ifdef RF
-unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RF24 comPort, unsigned char channel)
-#endif
-#ifdef RS485_INTERFACE
-unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut, RS485 comPort)
-#endif
+unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RF24 comPort, unsigned char channel)
 {
     CRC crc;
     unsigned char crc16 [2];
@@ -59,21 +53,12 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
     unsigned long ticksToEndBackOff = 0;
     bool validOnOff = false;
     unsigned char minutes2Backoff;
-    unsigned char aid;
-
- 
+    unsigned char aid; 
     
-	#ifdef RF
 
-        comsOk = comPort.read_Frame(dataIn,channel); //Data sent ok so receive new frame
-		failCount = 0;	
-	
-	#endif
-	#ifdef RS485
-		//TODO
-		//comOk = comPort.read_Frame(data,AUTH_CHANNEL); //Data sent ok so receive new frame
-	#endif
-	
+	comsOk = comPort.read_Frame(dataIn,channel); //Data sent ok so receive new frame
+	failCount = 0;
+
 
 
 	if(comsOk)
@@ -199,8 +184,10 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
 										oB = dataIn[dataInLenght+1];
 										inputs[oB].type = dataIn[dataInLenght++];
 										dataInLenght++;
-										inputs[oB].growRoomID = dataIn[dataInLenght++];
-										inputs[oB].growID = dataIn[dataInLenght++];
+										dataInLenght++;
+										dataInLenght++;
+										//inputs[oB].growRoomID = dataIn[dataInLenght++];
+										//inputs[oB].growID = dataIn[dataInLenght++];
                                         #ifdef SOILBOT_SCR
                                             memcpy(&inputs[oB].sampleTime, dataOut+dataInLenght,sizeof(unsigned long));
                                             dataInLenght+=4;
@@ -217,8 +204,10 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
 										oB = dataIn[dataInLenght+1];
 										outputs[oB].type = dataIn[dataInLenght++];
 										dataInLenght++;
-										outputs[oB].growRoomID = dataIn[dataInLenght++];
-										outputs[oB].growID = dataIn[dataInLenght++];
+										dataInLenght++;
+										dataInLenght++;
+										//outputs[oB].growRoomID = dataIn[dataInLenght++];
+										//outputs[oB].growID = dataIn[dataInLenght++];
 									}
 									dataInLenght++;	
 									dataInLenght+=8;	 //Discard Serial Number
@@ -368,9 +357,9 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                     switch(per)
                                     {                                       
                                 
-                                        case OUTPUT1_INDEX:
+                                        case OUTPUT_INDEX0:
                                             
-                                            aid = OUTPUT1_PIN;  
+                                            aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                             ticksToEndBackOff = millis() - ticksOut1;                                                           
 
                                             if(ticksToEndBackOff > (MILLIS_PER_MINUTE * minutes2BackOffOut1) )
@@ -386,9 +375,9 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                             
                                         break;
 
-                                        case OUTPUT2_INDEX:
+                                        case OUTPUT_INDEX1:
                                             
-                                            aid = OUTPUT2_PIN;                                              
+                                            aid = outputs[OUTPUT_INDEX1].arduinoPin;                                              
                                             ticksToEndBackOff = millis() - ticksOut2;
                                             
                                             if(ticksToEndBackOff > (MILLIS_PER_MINUTE * minutes2BackOffOut2) )
@@ -401,8 +390,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                             }
                                             break;
 
-                                        case OUTPUT3_INDEX:
-                                            aid = OUTPUT3_PIN;  
+                                        case OUTPUT_INDEX2:
+                                            aid = outputs[OUTPUT_INDEX2].arduinoPin;  
                                             
                                             ticksToEndBackOff = millis() - ticksOut3;
                                             
@@ -416,8 +405,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                             }
                                             break;
 
-                                        case OUTPUT4_INDEX:
-                                            aid = OUTPUT4_PIN;  
+                                        case OUTPUT_INDEX3:
+                                            aid = outputs[OUTPUT_INDEX3].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut4; 
                                         
@@ -431,8 +420,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
 
-                                        case OUTPUT5_INDEX:
-                                            aid = OUTPUT5_PIN;  
+                                        case OUTPUT_INDEX4:
+                                            aid = outputs[OUTPUT_INDEX4].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut5; 
                                         
@@ -446,8 +435,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
                                         
-                                        case OUTPUT6_INDEX:
-                                            aid = OUTPUT6_PIN;  
+                                        case OUTPUT_INDEX5:
+                                            aid = outputs[OUTPUT_INDEX5].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut6; 
                                         
@@ -461,8 +450,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
                                         
-                                        case OUTPUT7_INDEX:
-                                            aid = OUTPUT7_PIN;  
+                                        case OUTPUT_INDEX6:
+                                            aid = outputs[OUTPUT_INDEX6].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut7; 
                                         
@@ -476,8 +465,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
                                         
-                                        case OUTPUT8_INDEX:
-                                            aid = OUTPUT8_PIN;  
+                                        case OUTPUT_INDEX7:
+                                            aid = outputs[OUTPUT_INDEX7].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut8; 
                                         
@@ -491,8 +480,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
                                         
-                                        case OUTPUT9_INDEX:
-                                            aid = OUTPUT9_PIN;  
+                                        case OUTPUT_INDEX8:
+                                            aid = outputs[OUTPUT_INDEX8].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut9; 
                                         
@@ -506,8 +495,8 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         }
                                         break;
                                         
-                                        case OUTPUT10_INDEX:
-                                            aid = OUTPUT10_PIN;  
+                                        case OUTPUT_INDEX9:
+                                            aid = outputs[OUTPUT_INDEX9].arduinoPin;  
 
                                         ticksToEndBackOff = millis() - ticksOut10; 
                                         
@@ -540,54 +529,54 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                
                                         switch(per)
                                         {
-                                            case OUTPUT1_INDEX:
+                                            case OUTPUT_INDEX0:
                                                 ticksOut1 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut1;
-                                                aid = OUTPUT1_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break; 
                                                 
-                                            case OUTPUT2_INDEX:
+                                            case OUTPUT_INDEX1:
                                                 ticksOut2 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut2;
-                                                aid = OUTPUT2_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break;  
                                                 
-                                            case OUTPUT3_INDEX:
+                                            case OUTPUT_INDEX2:
                                                 ticksOut3 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut3;
-                                                aid = OUTPUT3_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break; 
                                                 
-                                            case OUTPUT4_INDEX:
+                                            case OUTPUT_INDEX3:
                                                 ticksOut4 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut4;
-                                                aid = OUTPUT4_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break; 
                                                 
-                                            case OUTPUT5_INDEX:
+                                            case OUTPUT_INDEX4:
                                                 ticksOut5 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut5;
-                                                aid = OUTPUT5_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break;  
                                                 
-                                            case OUTPUT6_INDEX:
+                                            case OUTPUT_INDEX5:
                                                 ticksOut6 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut6;
-                                                aid = OUTPUT6_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break;  
                                                 
-                                            case OUTPUT7_INDEX:
+                                            case OUTPUT_INDEX6:
                                                 ticksOut7 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut7;
-                                                aid = OUTPUT7_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break;  
                                                 
-                                            case OUTPUT8_INDEX:
+                                            case OUTPUT_INDEX7:
                                                 ticksOut8 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut8;
-                                                aid = OUTPUT4_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break; 
                                                 
-                                            case OUTPUT9_INDEX:
+                                            case OUTPUT_INDEX8:
                                                 ticksOut9 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut9;
-                                                aid = OUTPUT9_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;   
                                                 break;  
                                                 
-                                            case OUTPUT10_INDEX:
+                                            case OUTPUT_INDEX9:
                                                 ticksOut10 = millis() + MILLIS_PER_MINUTE * minutes2BackOffOut10;
-                                                aid = OUTPUT10_PIN; 
+                                                aid = outputs[OUTPUT_INDEX0].arduinoPin;  
                                                 break; 
                                         }
                                        
@@ -611,36 +600,36 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
                                         switch(per)
                                         {
 
-                                            case OUTPUT1_INDEX:
+                                            case OUTPUT_INDEX0:
                                                 ticksOut1 = millis();
                                             break;
                                                 
-                                           case OUTPUT2_INDEX:
+                                           case OUTPUT_INDEX1:
                                                 ticksOut2 = millis();
                                             break;
 
-                                            case OUTPUT3_INDEX:
+                                            case OUTPUT_INDEX2:
                                                 ticksOut3 = millis();
                                             break;
-                                            case OUTPUT4_INDEX:
+                                            case OUTPUT_INDEX3:
                                                 ticksOut4 = millis();
                                             break;
-                                            case OUTPUT5_INDEX:
+                                            case OUTPUT_INDEX4:
                                                 ticksOut5 = millis();
                                             break;
-                                            case OUTPUT6_INDEX:
+                                            case OUTPUT_INDEX5:
                                                 ticksOut6 = millis();
                                             break;
-                                            case OUTPUT7_INDEX:
+                                            case OUTPUT_INDEX6:
                                                 ticksOut7 = millis();
                                             break;
-                                            case OUTPUT8_INDEX:
+                                            case OUTPUT_INDEX7:
                                                 ticksOut8 = millis();
                                             break;
-                                            case OUTPUT9_INDEX:
+                                            case OUTPUT_INDEX8:
                                                 ticksOut9 = millis();
                                             break;
-                                            case OUTPUT10_INDEX:
+                                            case OUTPUT_INDEX9:
                                                 ticksOut10 = millis();
                                             break;
                                         }
@@ -652,7 +641,7 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
 								}
                             
                              
-                                snsState =  GET_IOS;
+                                snsState =  ACT_ON_IOS;
                          
                             if(validOnOff)
                             {
@@ -1051,17 +1040,9 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
 		}		
 		
 		if(areWeYourDroid)
-		{
-			
-            #ifdef RF
-               comsOk = comPort.write_Frame(dataOut,channel); //Send Frame
-            #endif
+		{			
+            comsOk = comPort.write_Frame(dataOut,channel); //Send Frame       
 
-            #ifdef RS485_INTERFACE
-                comsOk = comPort.write_Frame(dataOut); //Send Frame  
-            #endif  
-		
-			
 			if(comsOk && validAction)
 			{
 				if( saveModule!= 0x00)
@@ -1092,12 +1073,7 @@ unsigned char  OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * d
 
 }
 
-#ifdef RF
 unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RF24 comPort, unsigned char channel)
-#endif
-#ifdef RS485_INTERFACE
-unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 comPort)
-#endif
 {
 //unsigned char dataInLenght;
 		unsigned char dataOutLenght;
@@ -1128,13 +1104,8 @@ unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 co
 			{					
 				dataOut[dataOutLenght++]= inputs[oB].type;  //Create Temperature Sensor
 				dataOut[dataOutLenght++]= oB;		 				//Temperature Sensor ID
-				dataOut[dataOutLenght++]= inputs[oB].growRoomID;   //Assign GrowRoom to sensor
-				dataOut[dataOutLenght++]= inputs[oB].growID;	   //Assign Grow to sensor		
-                #ifdef SOILBOT_SCR
-                    memcpy(dataOut+dataOutLenght,&inputs[oB].sampleTime,sizeof(unsigned long));
-                    dataOutLenght+=sizeof(unsigned long);
-                #endif
-
+				dataOut[dataOutLenght++]= 0;   //Assign GrowRoom to sensor
+				dataOut[dataOutLenght++]= 0;	   //Assign Grow to sensor	
 			}
 		}
 		
@@ -1146,8 +1117,8 @@ unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 co
 			{					
 				dataOut[dataOutLenght++]= outputs[oB].type;  //Create Temperature Sensor
 				dataOut[dataOutLenght++]= oB;		 //Temperature Sensor ID
-				dataOut[dataOutLenght++]= outputs[oB].growRoomID;   //Assign GrowRoom to sensor
-				dataOut[dataOutLenght++]= outputs[oB].growID;		 //Assign Grow to sensor				
+				dataOut[dataOutLenght++]= 0;   //Assign GrowRoom to sensor
+				dataOut[dataOutLenght++]= 0;		 //Assign Grow to sensor				
 			}
 		}
 		dataOut[dataOutLenght++] = 0xFF;  //Outputs Ended
@@ -1179,16 +1150,9 @@ unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 co
 		dataOut[1] = dataOutLenght;
 		crc.CRC16 (dataOut,dataOutLenght,dataOut+dataOutLenght);        //Make frame with slaveAddress, sensors and outputs config, serialNumber and CRC
 		dataOutLenght=dataOutLenght+2;  		                       //
-		
-		#ifdef RF
-			comsOk = comPort.write_Frame(dataOut,channel); //Send Frame
-			//comPort.printDetails();
-		#endif
-		
-		#ifdef RS485_INTERFACE
-			//TODO
-			comOk = comPort.write_Frame(dataOut); //Send Frame
-		#endif	
+	
+	    comsOk = comPort.write_Frame(dataOut,channel); //Send Frame
+	
 
 		if(comsOk)
 		{
@@ -1203,23 +1167,6 @@ unsigned char OpenBus::usOpenBusCreateAuthFrame(unsigned char * dataOut,RS485 co
 }
 
 
-#if defined(DEBUGOPENBUS)
-void OpenBus::printDouble(double val, unsigned char precision) {
-
-  Serial.print (int(val));                                     // Print int part
-  if( precision > 0) {                                         // Print decimal part
-    Serial.print(".");
-    unsigned long frac, mult = 1;
-    byte padding = precision -1;
-    while(precision--) mult *=10;
-    if(val >= 0) frac = (val - int(val)) * mult; else frac = (int(val) - val) * mult;
-    unsigned long frac1 = frac;
-    while(frac1 /= 10) padding--;
-    while(padding--) Serial.print(F("0"));
-    Serial.print(frac,DEC) ;
-  }
-}
-#endif
 /****************************************************************************/
 
 

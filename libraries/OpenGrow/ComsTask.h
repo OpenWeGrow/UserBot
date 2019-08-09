@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
+ Copyright (C) 2019 Open Grow - GroLab, Author: JMelo <joao.melo@opengrow.pt>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -11,24 +11,14 @@
 
 
 
-#if defined (RF)
-	#include "RF24.h"	
-#endif
 
-#if defined(RS485_INTERFACE)
-	#include "RS485.h"	
-#endif
+#include "RF24.h"	
 
 #include "EEPROM_Utils.h"
-#include "SampleMethods.h"
 
 #define AUTH_CHANNEL  0x00
 #define MASTER_WRITE_CHANNEL 0x01
 #define MASTER_READ_CHANNEL  0x02
-
-
-
-extern SampleMethods vSampleMethods;
 
 /**
  * State Machine Enum
@@ -71,14 +61,9 @@ public:
 	ComsTask(void);
 	void(* resetFuncCom) (void) = 0; //declare reset function @ address 0
     
-    #if defined (RF)
-        void vGoComsTask(RF24 comPort);
-    #endif
-
-    #if defined(RS485_INTERFACE)
-        void vGoComsTask(RS485 comPort);
-    #endif
-	
+    
+	void vGoComsTask(RF24 comPort);
+  
 	
 };
 
