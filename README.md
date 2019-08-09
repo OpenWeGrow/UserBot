@@ -10,7 +10,7 @@ MOSI - Digital Pin 11<br />
 SS   - Digital Pin 10<br />
 CE   - Digital Pin 9<br />
 <br />
-If you need to control a lamp, you should have a relay, if you need to sample an analogue voltage for any purpose, you need to use Arduino analogue pins or get an external ADC.<br />
+If you need to control a lamp, you should have a relay, if you need to sample an analogue voltage for any purpose, you need to use Arduino analog pins or get an external ADC.<br />
 This is a plug'n'play shield for your Arduino that does not need any external power, and allows you to interface with whatever sensor or device you may need.
 <br />And below an overview of the GroLab™ UserBot Shield for Arduino<br />
 ![alt text](https://www.open-grow.co.uk/shop/img/opengrowimgs/schematics/description/UserBot_Info.png)
