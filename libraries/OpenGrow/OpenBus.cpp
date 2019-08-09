@@ -640,8 +640,9 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
                                     validOnOff = true;
 								}
                             
-                             
-                                snsState =  ACT_ON_IOS;
+								//Force sensors task to act on outputs
+								stMachineExternalControl = 0x01;
+                                //snsState =  ACT_ON_IOS;
                          
                             if(validOnOff)
                             {

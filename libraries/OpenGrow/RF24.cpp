@@ -104,9 +104,6 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 uint8_t RF24::write_register(uint8_t reg, uint8_t value)
 {
   uint8_t status;
-
-  /*IF_SERIAL_DEBUG(printf_P(PSTR("write_register(%02x,%02x)\r\n"),reg,value));*/
-
   csn(LOW);
   status = SPI.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
   SPI.transfer(value);
@@ -125,9 +122,7 @@ uint8_t RF24::write_payload(const void* buf, uint8_t len)
 
   uint8_t data_len = min(len,payload_size);
   uint8_t blank_len = dynamic_payloads_enabled ? 0 : payload_size - data_len;
-  
-  //printf("[Writing %u bytes %u blanks]",data_len,blank_len);
-  
+
   csn(LOW);
   status = SPI.transfer( W_TX_PAYLOAD );
   while ( data_len-- )
@@ -148,9 +143,7 @@ uint8_t RF24::read_payload(void* buf, uint8_t len)
 
   uint8_t data_len = min(len,payload_size);
   uint8_t blank_len = dynamic_payloads_enabled ? 0 : payload_size - data_len;
-  
-  //printf("[Reading %u bytes %u blanks]",data_len,blank_len);
-  
+
   csn(LOW);
   status = SPI.transfer( R_RX_PAYLOAD );
   while ( data_len-- )
@@ -203,51 +196,6 @@ uint8_t RF24::get_status(void)
 
 /****************************************************************************/
 
-void RF24::print_status(uint8_t status)
-{
-  /*printf_P(PSTR("STATUS\t\t = 0x%02x RX_DR=%x TX_DS=%x MAX_RT=%x RX_P_NO=%x TX_FULL=%x\r\n"),
-           status,
-           (status & _BV(RX_DR))?1:0,
-           (status & _BV(TX_DS))?1:0,
-           (status & _BV(MAX_RT))?1:0,
-           ((status >> RX_P_NO) & B111),
-           (status & _BV(TX_FULL))?1:0
-          );
-	printf("treta: 0x%02x",status);*/
-}
-
-/****************************************************************************/
-
-void RF24::print_observe_tx(uint8_t value)
-{
-  /*printf_P(PSTR("OBSERVE_TX=%02x: POLS_CNT=%x ARC_CNT=%x\r\n"),
-           value,
-           (value >> PLOS_CNT) & B1111,
-           (value >> ARC_CNT) & B1111
-          );*/
-}
-
-/****************************************************************************/
-
-/*void RF24::print_byte_register(uint8_t reg, uint8_t qty)
-{
-
-  while (qty--)
-  {
-    uint8_t buffer[5];
-    read_register(reg++,buffer,sizeof buffer);
-
-    Serial.print(F(" 0x"));
-    uint8_t* bufptr = buffer + sizeof buffer;
-    while( --bufptr >= buffer )
-      Serial.print(*bufptr,HEX);
-  }
-
-  Serial.print(F("\r\n"));
-}*/
-
-/****************************************************************************/
-
 void RF24::print_address_register(uint8_t reg, uint8_t qty)
 {
 
@@ -281,8 +229,6 @@ RF24::RF24(uint8_t _cepin, uint8_t _cspin):
 
 void RF24::setChannel(uint8_t channel)
 {
-  // TODO: This method could take advantage of the 'wide_band' calculation
-  // done in setChannel() to require certain channel spacing.
 
   const uint8_t max_channel = 127;
   write_register(RF_CH,min(channel,max_channel));
@@ -322,8 +268,6 @@ void RF24::printDetails(void)
 	Serial.print("RF: ");
 	Serial.println(read_register(RF_SETUP),HEX);
 	
-	/*Serial.print("OBTx: ");
-	Serial.println(read_register(OBSERVE_TX),HEX);	*/
 	
 	Serial.print("RX_ADDR_P0-1: ");
 	print_address_register(RX_ADDR_P0,2);
@@ -337,29 +281,10 @@ void RF24::printDetails(void)
 	Serial.print(" - 0x");
 	Serial.print(read_register(RX_ADDR_P5),HEX);	
 	
-	//print_byte_register(RX_ADDR_P2,4);
-	//print_byte_register(PSTR("RX_ADDR_P2-5",RX_ADDR_P2,4);
-	
+
 	Serial.print("TX_ADDR");
 	print_address_register(TX_ADDR);
-  //print_status();
 
-  
- /* print_byte_register(PSTR("RX_ADDR_P2-5",RX_ADDR_P2,4);
-  print_address_register(PSTR("TX_ADDR",TX_ADDR);
-
-  print_byte_register("RX_PW_P0-6",RX_PW_P0,6);
-  print_byte_register("EN_AA",EN_AA);
-  print_byte_register("EN_RXADDR",EN_RXADDR);
-  print_byte_register("RF_CH",RF_CH);
-  print_byte_register("RF_SETUP",RF_SETUP);
-  print_byte_register("CONFIG",CONFIG);
-  print_byte_register("DYNPD/FEATURE",DYNPD,2);*/
-
-  /*rintf_P(PSTR("Data Rate\t = %S\r\n"),pgm_read_word(&rf24_datarate_e_str_P[getDataRate()]));
-  printf_P(PSTR("Model\t\t = %S\r\n"),pgm_read_word(&rf24_model_e_str_P[isPVariant()]));
-  printf_P(PSTR("CRC Length\t = %S\r\n"),pgm_read_word(&rf24_crclength_e_str_P[getCRCLength()]));
-  printf_P(PSTR("PA Power\t = %S\r\n"),pgm_read_word(&rf24_pa_dbm_e_str_P[getPALevel()]));*/
 }
 
 /****************************************************************************/
@@ -449,49 +374,11 @@ void RF24::startListening(void)
   write_register(CONFIG, read_register(CONFIG) | _BV(PWR_UP) | _BV(PRIM_RX));
   write_register(STATUS, _BV(RX_DR) | _BV(TX_DS) | _BV(MAX_RT) );
   
-  /*Serial.print("Slave: ");
-  Serial.print(slaveAddress,DEC);
-  
-  Serial.print("  Hear on Ch: ");*/
-  
-  
-  /*if(slaveAddress!=0xFF)
-  {
-      setChannel((uint8_t)((botType-1)*5) + (25*(masterID-1)) + slaveAddress & 0x0F);
-      Serial.println("!!");
-      Serial.println((uint8_t)((uint8_t)((((botType-1)*5) + (25*(masterID-1))) + slaveAddress & 0x0F)),DEC);
-  }
-  else
-  {
-	setChannel((uint8_t)(((botType-1)*5) + (25*(masterID-1))));
-        Serial.println("!!");
-        Serial.println((uint8_t)(((botType-1)*5) + (25*(masterID-1))),DEC);
-  
-	//setChannel((uint8_t)BASE_RF_CHANNEL);
-	//Serial.println((uint8_t)BASE_RF_CHANNEL,DEC);
-  }*/
-	
+ 
   // Restore the pipe0 adddress, if exists
   if (pipe0_reading_address)
     write_register(RX_ADDR_P0, reinterpret_cast<const uint8_t*>(&pipe0_reading_address), 5);
- /*/ if (pipe0_reading_address)
-    write_register(RX_ADDR_P0, reinterpret_cast<const uint8_t*>(&pipe0_reading_address), 5);
-	
-	tempPipe[0] = masterID; 
-	tempPipe[1] = masterID; 
-	tempPipe[2] = masterID; 
-	tempPipe[3] = masterID; 
-	tempPipe[4] = masterID; 
-	
-	write_register(RX_ADDR_P1, tempPipe, 5);
-	
-	write_register(RX_ADDR_P2,(masterID*3+1));
-	write_register(RX_ADDR_P3,(masterID*3+2));
-	write_register(RX_ADDR_P4,(masterID*3+3));
-	write_register(RX_ADDR_P5,(masterID*3+4));
-	
-        write_register(RX_PW_P0,payload_size);
-        write_register(RX_PW_P1,payload_size);*/
+
   // Flush buffers
   flush_rx();
   flush_tx();
@@ -569,17 +456,15 @@ bool RF24::write( const void* buf, uint8_t len )
   
   whatHappened(tx_ok,tx_fail,ack_payload_available);
   
-  //printf("%u%u%u\r\n",tx_ok,tx_fail,ack_payload_available);
 
   result = tx_ok;
-  //IF_SERIAL_DEBUG(Serial.print(result?"...OK.":"...Failed"));
+
 
   // Handle the ack packet
   if ( ack_payload_available )
   {
     ack_payload_length = getDynamicPayloadSize();
-    //IF_SERIAL_DEBUG(Serial.print("[AckPacket]/"));
-    //IF_SERIAL_DEBUG(Serial.println(ack_payload_length,DEC));
+
   }
 
   // Yay, we are done.
@@ -605,7 +490,6 @@ bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 	stopListening();
 	openWritingPipe(pipes[channel]);
     
-	//flush_tx();
 	// Begin the write
 	start_at = millis();
 	
@@ -640,40 +524,23 @@ bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 	  const uint32_t timeout = 500; //ms to wait for timeout
 	  do
 	  {
-		status = read_register(OBSERVE_TX,&observe_tx,1);
-		//IF_SERIAL_DEBUG(Serial.print(observe_tx,HEX));
+		status = read_register(OBSERVE_TX,&observe_tx,1);		
 	  }
 	  while( ! ( status & ( _BV(TX_DS) | _BV(MAX_RT) ) ) && ( millis() - sent_at < timeout ) );
 	  
 		whatHappened(tx_ok,tx_fail,ack_payload_available); 
-		/*#ifdef DEBUGRF		
-			printf("%u%u%u\r\n",tx_ok,tx_fail,ack_payload_available);
-		#endif*/
+		
 		
 	  if(tx_ok)
 	  {
-		/*#ifdef DEBUGRF
-			printf("Data Sent with ACK buf: %04x  lenght: %04x \n\r",buf,frameLenght);
-		#endif*/
-              //Serial.println("TX OK ");
-              //Serial.println(frameLenght,DEC);
-             /* Serial.println();
-              printf("Data Sent with ACK buf: %04x  lenght: %04x \n\r",buf,frameLenght);*/
+		
 		start_at = millis();
 		
 		frameLenght +=payloadSize;			
 	  }
-	  else
-	  {
-		/*#ifdef DEBUGRF
-			printf("Data Sent without NACK  buf: %02x  lenght: %04x \n\r",buf,frameLenght);
-		#endif*/
-              //Serial.println("TX NOK ");
-              //Serial.println(frameLenght,DEC);
-             //printf("Data Sent without NACK  buf: %02x  lenght: %04x \n\r",buf,frameLenght);
-	  }
+	
 	  flush_tx();
-	   //powerDown();
+	 
 	   
 	// Flush buffers (Is this a relic of past experimentation, and not needed anymore??)
 	//delay(2000);
@@ -681,43 +548,13 @@ bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 
 	if(!( millis() - start_at < timeout_at ))
         frameResult = false;
-	// The part above is what you could recreate with your own interrupt handler,
-	// and then call this when you got an interrupt
-	// ------------
 
-	// Call this when you get an interrupt
-	// The status tells us three things
-	// * The send was successful (TX_DS)
-	// * The send failed, too many retries (MAX_RT)
-	// * There is an ack packet waiting (RX_DR)
-	/*bool tx_ok, tx_fail;
-	whatHappened(tx_ok,tx_fail,ack_payload_available);
-
-	//printf("%u%u%u\r\n",tx_ok,tx_fail,ack_payload_available);
-
-	result = tx_ok;
-	IF_SERIAL_DEBUG(Serial.print(result?"...OK.":"...Failed"));
-
-	// Handle the ack packet
-	if ( ack_payload_available )
-	{
-	ack_payload_length = getDynamicPayloadSize();
-	IF_SERIAL_DEBUG(Serial.print("[AckPacket]/"));
-	IF_SERIAL_DEBUG(Serial.println(ack_payload_length,DEC));
-	}*/
-
-	// Yay, we are done.
-        /*if(frameResult)
-            Serial.println("SOK");
-        else
-            Serial.println("NOK");*/
-       // printDetails();
 	// Power down
 	powerDown();
 
 	// Flush buffers (Is this a relic of past experimentation, and not needed anymore??)
 	flush_tx();
-    //printDetails();
+  
 	return frameResult;
 }
 /****************************************************************************/
@@ -764,8 +601,6 @@ bool RF24::available(uint8_t* pipe_num)
 {
   uint8_t status = get_status();
 
-  // Too noisy, enable if you really want lots o data!!
-  //IF_SERIAL_DEBUG(print_status(status));
 
   bool result = ( status & _BV(RX_DR) );
 
@@ -774,11 +609,6 @@ bool RF24::available(uint8_t* pipe_num)
     // If the caller wants the pipe number, include that
     if ( pipe_num )
       *pipe_num = ( status >> RX_P_NO ) & B111;
-
-    // Clear the status bit
-
-    // ??? Should this REALLY be cleared now?  Or wait until we
-    // actually READ the payload?
 
     write_register(STATUS,_BV(RX_DR) );
 
@@ -805,22 +635,16 @@ bool RF24::read( void* buf, uint8_t len )
 
 unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 {
-	//frameResult = true; 
-	//frameLenght = 0;   
-    //bool moreData = true;
+
     unsigned char status;
 	uint32_t start_at = 0;
 	const uint32_t timeout_at = 1000; //ms to wait for timeout
     unsigned char temp [32];  //Temporary buffer used for 256bytes frame construction
-    //unsigned char emptyRef [32];  //Temporary buffer used for 256bytes frame construction
     unsigned short frameLenght = 0; //Payload counter for frame reception/send
-	//stopListening();
-	//flush_rx();
+
     memset(buf,0x00,sizeof(buf));
-   // memset(emptyRef,0x00,sizeof(emptyRef));
 	openReadingPipe(0,pipes[channel]);
 	startListening();
-	//flush_rx();//startListening();
 
 	start_at = millis();
 	while(frameLenght<256 && (millis() - start_at < timeout_at))
@@ -835,18 +659,10 @@ unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 				
 				while(!(read_register(FIFO_STATUS) & _BV(RX_EMPTY)) && frameLenght<256)
 				{									
-					memset(temp,0x00,payloadSize);
-					/*read( temp, payloadSize );
-                    memcpy(&buf[frameLenght],temp,payloadSize);
-                    frameLenght += payloadSize;	*/
-                                
-                   status = getDynamicPayloadSize();
-                    
-                     
-                    //Serial.print("ei:");
+					memset(temp,0x00,payloadSize);                                
+                    status = getDynamicPayloadSize();
                     read( temp, payloadSize );
                     status = getDynamicPayloadSize();
-                    //Serial.println(status,DEC);
                      
                     if(!(status > 32))
                     {
@@ -864,26 +680,16 @@ unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 	}
 	stopListening();
 	delay(5);
-	//flush_rx();
+	
 	if(!(millis() - start_at < timeout_at))
-	{
-        
-        flush_rx();
-		#ifdef DEBUGRF
-			Serial.println("Frame Timeout");
-		#endif
-        //Serial.println("FTimeout");
-                //Serial.println("RNOK");
-                //printDetails();
+	{       
+        flush_rx();       
 		return false;
 	}
 	else
 	{
-            //Serial.println("ROK");
-            //printDetails();
-            return true;
-	}
- 
+        return true;
+	} 
 }
 
 /****************************************************************************/

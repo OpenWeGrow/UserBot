@@ -21,13 +21,16 @@
 //Firmware V1.0.0.6 - Updated to latest COMS stack and cleaned to be used in UserBot public repository
 //Firmware V1.0.0.7 - Code CleanUp
 //Firmware v1.0.0.8 - Stack configuration changed so its configuration is a bit more simple - Cleared RS485 defines
-
+//Firmware v1.1.0.8 - Removed Timer 1, clean up of RF24 comments, updated firmware to support HW version, added external SensorsTask state machine control, GroBot Variables clean up
 
 
 #define FW_1  1
-#define FW_2  0
+#define FW_2  1
 #define FW_3  0
 #define FW_4  8
+
+//Restar after 60 seconds without any communications with a master
+#define SHUTDOWN_TIMEOUT 60000
 
 //Generic definition
 #define TYPE_INPUT      	  	0x00
@@ -103,133 +106,17 @@
 #define OUTPUT_INDEX8      	     8    //Position in outputs[8] 
 #define OUTPUT_INDEX9      	     9    //Position in outputs[9] 
 
-
-/*
-//Used Inputs for the example
-#define INPUT_INDEX0      	     0    //Position in inputs[0] 
-#define INPUT_PIN0   		     2    //Pin that actually samples the button
-#define INPUT_PIN0_TYPE          BUTTON
-#define INPUT_PIN0_NAME          "Button 1"
-
-#define INPUT_INDEX1      	     1    //Position in inputs[1] 
-#define INPUT_PIN1  		     3    //Pin that actually samples the button
-#define INPUT_PIN1_TYPE          BUTTON
-#define INPUT_PIN1_NAME          "Button 2"
-
-#define INPUT_INDEX2     	     2    //Position in inputs[2] 
-#define INPUT_PIN2 		     	 4    //Pin that actually samples the button
-#define INPUT_PIN2_TYPE          BUTTON
-#define INPUT_PIN2_NAME          "Button 3"
-
-#define INPUT_INDEX3     	     3    //Position in inputs[3] 
-#define INPUT_PIN3   		     A0    //Pin that actually samples the button
-#define INPUT_PIN3_TYPE          DIG_TEMPERATURE
-#define INPUT_PIN3_NAME          "Temperature"
-
-#define INPUT_INDEX4      	     4    //Position in inputs[4] 
-#define INPUT_PIN4   		     0    //Pin that actually samples the button
-#define INPUT_PIN4_TYPE          OPEN_DEFAULT
-#define INPUT_PIN4_NAME          "null"
-
-#define INPUT_INDEX5      	     5    //Position in inputs[5] 
-#define INPUT_PIN5   		     0    //Pin that actually samples the button
-#define INPUT_PIN5_TYPE          OPEN_DEFAULT
-#define INPUT_PIN5_NAME          "null"
-
-#define INPUT_INDEX6     	     6    //Position in inputs[6] 
-#define INPUT_PIN6   		     0    //Pin that actually samples the button
-#define INPUT_PIN6_TYPE          OPEN_DEFAULT
-#define INPUT_PIN6_NAME          "null"
-
-#define INPUT_INDEX7      	     7    //Position in inputs[7] 
-#define INPUT_PIN7   		     0    //Pin that actually samples the button
-#define INPUT_PIN7_TYPE          OPEN_DEFAULT
-#define INPUT_PIN7_NAME          "null"
-
-#define INPUT_INDEX8      	     8    //Position in inputs[8] 
-#define INPUT_PIN8   		     0    //Pin that actually samples the button
-#define INPUT_PIN8_TYPE          OPEN_DEFAULT
-#define INPUT_PIN8_NAME          "null"
-
-#define INPUT_INDEX9      	     9    //Position in inputs[9] 
-#define INPUT_PIN9   		     0    //Pin that actually samples the button
-#define INPUT_PIN9_TYPE          OPEN_DEFAULT
-#define INPUT_PIN9_NAME          "null"
-
-//Unused Outputs
-//They are not used but must be defined so the ACT_WRITE_VALUE in OpenBus can implement the backoff time
-
-#define OUTPUT_INDEX0      	     0    //Position in outputs[0] 
-#define OUTPUT_PIN0   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN0_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN0_NAME         "null"
-
-#define OUTPUT_INDEX1      	     1    //Position in outputs[1] 
-#define OUTPUT_PIN1  		     0    //Pin that actually acts as output
-#define OUTPUT_PIN1_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN1_NAME         "null"
-
-#define OUTPUT_INDEX2     	     2    //Position in outputs[2] 
-#define OUTPUT_PIN2 		     0    //Pin that actually acts as output
-#define OUTPUT_PIN2_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN2_NAME         "null"
-
-#define OUTPUT_INDEX3     	     3    //Position in outputs[3] 
-#define OUTPUT_PIN3   		     0   //Pin that actually acts as output
-#define OUTPUT_PIN3_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN3_NAME         "null"
-
-#define OUTPUT_INDEX4      	     4    //Position in outputs[4] 
-#define OUTPUT_PIN4   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN4_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN4_NAME         "null"
-
-#define OUTPUT_INDEX5      	     5    //Position in outputs[5] 
-#define OUTPUT_PIN5   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN5_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN5_NAME         "null"
-
-#define OUTPUT_INDEX6     	     6    //Position in outputs[6] 
-#define OUTPUT_PIN6   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN6_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN6_NAME         "null"
-
-#define OUTPUT_INDEX7      	     7    //Position in outputs[7] 
-#define OUTPUT_PIN7   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN7_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN7_NAME         "null"
-
-#define OUTPUT_INDEX8      	     8    //Position in outputs[8] 
-#define OUTPUT_PIN8   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN8_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN8_NAME         "null"
-
-#define OUTPUT_INDEX9      	     9    //Position in outputs[9] 
-#define OUTPUT_PIN9   		     0    //Pin that actually acts as output
-#define OUTPUT_PIN9_TYPE         OPEN_DEFAULT
-#define OUTPUT_PIN9_NAME         "null"*/
-
-
-
-
 #define PERIPHERAL_INPUT   0x01
 #define PERIPHERAL_OUTPUT  0x02
 
 #define MAX_INPUTS 0x0A
 #define MAX_OUTPUTS 0x0A
 
-
 //Module Types
 #define USERBOT                 0x05
 
 #define SET_OFF_TIMEOUT   3 
 
-//Debug the code as you wish, careful can cause memory full!!
-//#define DEBUGCOMSTASK     //Implements debug printf on COMSTAK
-//#define DEBUGOPENBUS      //Implements debug printf on COMSTAK
-//#define DEBUGRF         //Implements debug printf on RFCOMS
-//#define GENERALDEBUG         //Implements debug printf on RFCOMS
-//#define DEBUGBASIC
 
 //Module Config Variables
 extern unsigned char slaveAddress;
@@ -245,7 +132,9 @@ extern unsigned char need2Shutdown;
 extern unsigned long timeout2Shutdown;
 extern unsigned char shutdownFlag;
 extern unsigned long shutdownTimeout;
-#define SHUTDOWN_TIMEOUT 60000
+
+//State Machine External Control
+extern unsigned char stMachineExternalControl;
 
     
 struct stINPUT {
@@ -271,14 +160,7 @@ extern struct stOUTPUT outputs[MAX_OUTPUTS];
 extern CRC crc;
 extern unsigned char crc16 [2];
 
-// ENUM used in the switch cases from SensorsTask.cpp (UserBot folder)
-enum sensorsMachineState {
-  INIT_SENSORS = 0,
-  GET_TEMP,	
-  GET_IOS,
-  ACT_ON_IOS
-};
-extern sensorsMachineState snsState;
+
 
 
 //Module Default Info
