@@ -1,4 +1,4 @@
-# GroLab™ UserBot
+# GroLab™ UserBot Basic Example
 Source code for Arduino with GroLab UserBot Shield to interface with GroNode.
 The code uses as base the SPI port for th RF Communications using the respective pins:
 <br /><br />
