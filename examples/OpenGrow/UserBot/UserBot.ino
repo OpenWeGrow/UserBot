@@ -18,11 +18,8 @@ The code is based on Non-Preemptive Multitasking, so you can add any more tasks 
 #include "GroBot_Variables.h"
 #include <Wire.h>
 
-
 #include "nRF24L01.h"
-#include "RF24.h"		
-
-
+#include "RF24.h"
 
 #include "ComsTask.h"
 #include "SerialTask.h"
@@ -32,27 +29,22 @@ The code is based on Non-Preemptive Multitasking, so you can add any more tasks 
 
 RF24 radio(9,10);  //Pin 9 and 10 are used by the NRF24L01
 
-unsigned long userBotSerialNumber = 5020202020;
-
 ComsTask vComsTask;
 SerialTask vSerialTask;
 SensorsTask vSensorsTask;
 
-unsigned char timerCounter =0;
+unsigned char timerCounter = 0;
 
 void setup(void)
 {
-
 	//There are two global arrays to handle all variables data
 	//inputs[]/outputs[]
 	//Each array has a max of 10 positions
-	//For each sensor or output the user must define:	// 
-	//     
+	//For each sensor or output the user must define:
+	//
 	//     - The pin that is where the sensor/device is connected  - ensure zero(0) if not used
 	//     - The type of the sensor/output                         - ensure OPEN_DEFAULT if not used
-	//	
-	
-
+	//
 	inputs[INPUT_INDEX0].arduinoPin = A0;   //Button Pin
 	inputs[INPUT_INDEX1].arduinoPin = A1;   //LM35 Pin
 	inputs[INPUT_INDEX2].arduinoPin = 0;    //Unused Input
@@ -68,7 +60,7 @@ void setup(void)
 	inputs[INPUT_INDEX1].type = DIG_TEMPERATURE;
 	inputs[INPUT_INDEX2].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX3].type = OPEN_DEFAULT;	//Unused Input
-	inputs[INPUT_INDEX4].type = OPEN_DEFAULT;	//Unused Input	
+	inputs[INPUT_INDEX4].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX5].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX6].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX7].type = OPEN_DEFAULT;	//Unused Input
@@ -97,10 +89,10 @@ void setup(void)
 	outputs[OUTPUT_INDEX8].type = OPEN_DEFAULT;	//Unused Output
 	outputs[OUTPUT_INDEX9].type = OPEN_DEFAULT;	//Unused Output
 
-    Serial.begin(230400);  //
-	Serial.setTimeout(10);	
+    Serial.begin(230400);
+	Serial.setTimeout(10);
 
-	vComsTask.vGoComsTask(radio); 
+	vComsTask.vGoComsTask(radio);
 
 	vSerialTask.printDisclamer();
 
@@ -119,7 +111,6 @@ void setup(void)
 	TCCR1B |= (1 << CS12) | (1 << CS10);  
 	// enable timer compare interrupt
 	TIMSK1 |= (1 << OCIE1A);
-  
 }
 
 //Main program loop
@@ -129,11 +120,11 @@ void loop(void)
 	if(!(serialNumber[4] == DEFAULT_SERIALNUMBER_4 && serialNumber[5] == DEFAULT_SERIALNUMBER_5 && serialNumber[6] == DEFAULT_SERIALNUMBER_6 && serialNumber[7] == DEFAULT_SERIALNUMBER_7))
 	{	
 		//RF Task
-		vComsTask.vGoComsTask(radio);	
+		vComsTask.vGoComsTask(radio);
 	}
 	else
 	{
-		//If no serial number is defined, to module get's stuck here until a valid serial number is defined
+		//If no serial number is defined, to module gets stuck here until a valid serial number is defined
 		Serial.println("RFH");
 	}
 		
@@ -141,7 +132,6 @@ void loop(void)
     vSerialTask.vGoSerialTask(radio);	
 	//IO Management Task
     vSensorsTask.GoSensorsTask();
-	
 }
 
 //Timer Interrupt Handler
@@ -149,7 +139,7 @@ SIGNAL(TIMER1_COMPA_vect)
 {
 	timerCounter++;
 	
-    if(timerCounter==TIME_2_PRINT_DEBUG)
+    if(timerCounter == TIME_2_PRINT_DEBUG)
     {
 		timerCounter=0;
 		//Dump sampled data in the UART
@@ -158,7 +148,7 @@ SIGNAL(TIMER1_COMPA_vect)
 		Serial.println(F(" C"));
 		
 		Serial.print(F("Button-"));
-		if(inputs[INPUT_INDEX0].value==0)
+		if(inputs[INPUT_INDEX0].value == 0)
 		{
 			Serial.println(F("OFF"));			
 		}
@@ -168,7 +158,7 @@ SIGNAL(TIMER1_COMPA_vect)
 		}
 	
 	    Serial.print(F("LED-"));
-		if(outputs[OUTPUT_INDEX0].value==0)
+		if(outputs[OUTPUT_INDEX0].value == 0)
 		{
 			Serial.print(F("OFF Speed-"));			
 		}
@@ -180,7 +170,5 @@ SIGNAL(TIMER1_COMPA_vect)
 		Serial.println(outputs[OUTPUT_INDEX0].speed,DEC);
 		Serial.println("");
 	}
-	
 }
 /****************************************************************************/
-
