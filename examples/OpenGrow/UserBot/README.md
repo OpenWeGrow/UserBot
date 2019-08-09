@@ -11,7 +11,9 @@ CE   - Digital Pin 9<br />
 <br />
 The code use as example the sampling of 3 Buttons and a LM35 Temperature sensor.<br />
 Button 1 - Analogue Input A0 <br />
-LM35 - Temperature Sensor - Analogue Input A1
+LM35 Temperature Sensor - Analogue Input A1<br />
+LED - Digital PWM pin 3 
+
 <br />
 <br />
 You can find the wiring diagram below.<br />
