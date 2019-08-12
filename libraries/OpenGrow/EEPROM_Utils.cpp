@@ -36,43 +36,43 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 {
 	//Reset EEPROM
 	EEPROM.write(EEPROM_SERIALNUMBER, DEFAULT_SERIALNUMBER_0);   	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+1, DEFAULT_SERIALNUMBER_1); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+2, DEFAULT_SERIALNUMBER_2); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+3, DEFAULT_SERIALNUMBER_3); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+4, DEFAULT_SERIALNUMBER_4); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+5, DEFAULT_SERIALNUMBER_5); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+6, DEFAULT_SERIALNUMBER_6); 	//Save Serial Number
-	EEPROM.write(EEPROM_SERIALNUMBER+7, DEFAULT_SERIALNUMBER_7); 	//Save Serial Number
-	EEPROM.write(EEPROM_SLAVE_INIT_STATE, OPEN_DEFAULT); 			//Module in first connection
-	EEPROM.write(EEPROM_MASTER_ID, OPEN_MASTERID_DEFAULT); 			//No Master ID yet
-	EEPROM.write(EEPROM_BOT_ID, OPEN_BOT_ID_DEFAULT); 				//No Master ID yet
+	EEPROM.write(EEPROM_SERIALNUMBER + 1, DEFAULT_SERIALNUMBER_1); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 2, DEFAULT_SERIALNUMBER_2); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 3, DEFAULT_SERIALNUMBER_3); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 4, DEFAULT_SERIALNUMBER_4); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 5, DEFAULT_SERIALNUMBER_5); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 6, DEFAULT_SERIALNUMBER_6); 	//Save Serial Number
+	EEPROM.write(EEPROM_SERIALNUMBER + 7, DEFAULT_SERIALNUMBER_7); 	//Save Serial Number
+	EEPROM.write(EEPROM_SLAVE_INIT_STATE, OPEN_DEFAULT);			//Module in first connection
+	EEPROM.write(EEPROM_MASTER_ID, OPEN_MASTERID_DEFAULT);			//No Master ID yet
+	EEPROM.write(EEPROM_BOT_ID, OPEN_BOT_ID_DEFAULT);				//No Master ID yet
 
 	//You should define your sensor types and names here
 	EEPROM.write(EEPROM_BOT_TYPE, USERBOT); //Save Module Type
 
-	strcpy(name,"User Bot");
+	strcpy(name, "User Bot");
 	
-	strcpy(inputs[INPUT_INDEX0].name,"Input 1");
-	strcpy(inputs[INPUT_INDEX1].name,"Input 2");
-	strcpy(inputs[INPUT_INDEX2].name,"Input 3");
-	strcpy(inputs[INPUT_INDEX3].name,"Input 4");
-	strcpy(inputs[INPUT_INDEX4].name,"Input 5");
-	strcpy(inputs[INPUT_INDEX5].name,"Input 6");
-	strcpy(inputs[INPUT_INDEX6].name,"Input 7");
-	strcpy(inputs[INPUT_INDEX7].name,"Input 8");
-	strcpy(inputs[INPUT_INDEX8].name,"Input 9");
-	strcpy(inputs[INPUT_INDEX9].name,"Input 10");	
+	strcpy(inputs[INPUT_INDEX0].name, "Input 1");
+	strcpy(inputs[INPUT_INDEX1].name, "Input 2");
+	strcpy(inputs[INPUT_INDEX2].name, "Input 3");
+	strcpy(inputs[INPUT_INDEX3].name, "Input 4");
+	strcpy(inputs[INPUT_INDEX4].name, "Input 5");
+	strcpy(inputs[INPUT_INDEX5].name, "Input 6");
+	strcpy(inputs[INPUT_INDEX6].name, "Input 7");
+	strcpy(inputs[INPUT_INDEX7].name, "Input 8");
+	strcpy(inputs[INPUT_INDEX8].name, "Input 9");
+	strcpy(inputs[INPUT_INDEX9].name, "Input 10");
 	
-	strcpy(outputs[OUTPUT_INDEX0].name,"Output 1");
-	strcpy(outputs[OUTPUT_INDEX1].name,"Output 2");
-	strcpy(outputs[OUTPUT_INDEX2].name,"Output 3");
-	strcpy(outputs[OUTPUT_INDEX3].name,"Output 4");
-	strcpy(outputs[OUTPUT_INDEX4].name,"Output 5");
-	strcpy(outputs[OUTPUT_INDEX5].name,"Output 6");
-	strcpy(outputs[OUTPUT_INDEX6].name,"Output 7");
-	strcpy(outputs[OUTPUT_INDEX7].name,"Output 8");
-	strcpy(outputs[OUTPUT_INDEX8].name,"Output 9");
-	strcpy(outputs[OUTPUT_INDEX9].name,"Output 10");	
+	strcpy(outputs[OUTPUT_INDEX0].name, "Output 1");
+	strcpy(outputs[OUTPUT_INDEX1].name, "Output 2");
+	strcpy(outputs[OUTPUT_INDEX2].name, "Output 3");
+	strcpy(outputs[OUTPUT_INDEX3].name, "Output 4");
+	strcpy(outputs[OUTPUT_INDEX4].name, "Output 5");
+	strcpy(outputs[OUTPUT_INDEX5].name, "Output 6");
+	strcpy(outputs[OUTPUT_INDEX6].name, "Output 7");
+	strcpy(outputs[OUTPUT_INDEX7].name, "Output 8");
+	strcpy(outputs[OUTPUT_INDEX8].name, "Output 9");
+	strcpy(outputs[OUTPUT_INDEX9].name, "Output 10");
 	
 	//If you need calibration parameters you can use the structure below to save those parameters on the EEPROM
 	CalibParams.timeMax = 700;
@@ -86,34 +86,32 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 	vSaveCalib(5);
 	vSaveCalib(6);
 
-	//Set your FirmwareVersion		
+	//Set your FirmwareVersion
 	fwVersion[0] = FW_1;
 	fwVersion[1] = FW_2;
 	fwVersion[2] = FW_3;
 	fwVersion[3] = FW_4;
 	
-	for(ei=0;ei<MAX_INPUTS;ei++) //Clear All Inputs to default Value
+	for(ei=0; ei < MAX_INPUTS; ei++) //Clear All Inputs to default Value
 	{	
-		memadd = EEPROM_INPUT1_START + (ei*18);
-		EEPROM.write(memadd, inputs[ei].type);   		//Set Input Type
-		EEPROM.write(memadd+1, OPEN_GROWS_DEFAULT);   	//Set GrowRoom ID
-		EEPROM.write(memadd+2, OPEN_GROWS_DEFAULT);		//Set Grow ID
-		
-		eeprom_write_block(inputs[ei].name, (void *)(memadd+3), sizeof(inputs[ei].name));			
-		
+		memadd = EEPROM_INPUT1_START + (ei * 18);
+		EEPROM.write(memadd, inputs[ei].type);				//Set Input Type
+		EEPROM.write(memadd + 1, OPEN_GROWS_DEFAULT);		//Set GrowRoom ID
+		EEPROM.write(memadd + 2, OPEN_GROWS_DEFAULT);		//Set Grow ID		
+		eeprom_write_block(inputs[ei].name, (void *)(memadd + 3), sizeof(inputs[ei].name));
 	}
 	
-	for(ei=0;ei<MAX_OUTPUTS;ei++) //Clear all Outputs from memory
+	for(ei=0; ei < MAX_OUTPUTS; ei++) //Clear all Outputs from memory
 	{
-		memadd = EEPROM_OUTPUT1_START + (ei*18);
-		EEPROM.write(memadd, outputs[ei].type);  		//Set Output Type
-		EEPROM.write(memadd+1, OPEN_GROWS_DEFAULT);  	//Set Default GrowRoom ID
-		EEPROM.write(memadd+2, OPEN_GROWS_DEFAULT);  	//Set Default Grow ID
-		eeprom_write_block(outputs[ei].name, (void *)(memadd+3), sizeof(outputs[ei].name));	
+		memadd = EEPROM_OUTPUT1_START + (ei * 18);
+		EEPROM.write(memadd, outputs[ei].type);				//Set Output Type
+		EEPROM.write(memadd + 1, OPEN_GROWS_DEFAULT);		//Set Default GrowRoom ID
+		EEPROM.write(memadd + 2, OPEN_GROWS_DEFAULT);		//Set Default Grow ID
+		eeprom_write_block(outputs[ei].name, (void *)(memadd + 3), sizeof(outputs[ei].name));	
 	}
 
-	memset(name,0x00, sizeof(name));
-	strcpy(name,"New UserBot");		
+	memset(name, 0x00, sizeof(name));
+	strcpy(name, "New UserBot");
 	
 	eeprom_write_block(name, (void *)(EEPROM_BOT_NAME), sizeof(name)); 
 	eeprom_write_block(fwVersion, (void *)(FW_EEPROM_START), sizeof(fwVersion));
@@ -122,42 +120,42 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 
 void EEPROMUtils::dumpEEPROM ()
 {
-	for(ei = 0; ei< 0x255;ei++)
+	for(ei = 0; ei< 0x255; ei++)
 	{
 		Serial.print(ei,HEX);
-		Serial.println(EEPROM.read(ei),HEX);			
+		Serial.println(EEPROM.read(ei), HEX);
 	}
 }
 
 void EEPROMUtils::vSaveSlaveAdress(unsigned char newSlaveAdress)
 {
-	EEPROM.write(EEPRROM_SLAVEADDRESS , newSlaveAdress);	
+	EEPROM.write(EEPRROM_SLAVEADDRESS, newSlaveAdress);
 	EEPROM.write(EEPROM_SLAVE_INIT_STATE, MODULE_CONFIGED);
 }
 
 void EEPROMUtils::vSaveBotID(unsigned char newBotID)
 {
-	EEPROM.write(EEPROM_BOT_ID , newBotID);
+	EEPROM.write(EEPROM_BOT_ID, newBotID);
 }
 
 void EEPROMUtils::vSaveShutdown()
 {
-	EEPROM.write(EEPROM_SHUTDWON_FLAG , shutdownFlag);	//Set New Shutdown flag
+	EEPROM.write(EEPROM_SHUTDWON_FLAG, shutdownFlag);	//Set New Shutdown flag
 	eeprom_write_block(&shutdownTimeout, (void *)EEPROM_SHUTDWON_TIMEOUT, sizeof(shutdownTimeout));
 }
 
 void EEPROMUtils::saveModuleConfig(unsigned char saveWhat)
-{	
+{
 	switch(saveWhat)
 	{
 		case SAVE_SLAVEADRESS:
 			EEPROM.write(EEPRROM_SLAVEADDRESS, slaveAddress);
 			break;
 		case SAVE_SERIALNUMBER:
-			for(ei=0;ei<8;ei++)
+			for(ei=0; ei < 8; ei++)
 			{
 				memadd = EEPROM_SERIALNUMBER + ei;
-				EEPROM.write(memadd,   serialNumber[ei]);
+				EEPROM.write(memadd, serialNumber[ei]);
 			}	
 			break;
 		case SAVE_MASTERID:
@@ -166,16 +164,16 @@ void EEPROMUtils::saveModuleConfig(unsigned char saveWhat)
 		case SAVE_INITSTATE:
 			EEPROM.write(EEPROM_SLAVE_INIT_STATE, MODULE_CONFIGED);
 			break;
-        case SHUTDOWN_CONFIG:
-            vSaveShutdown();
-            break;
-		case CALIB_INPUT_1:			
+		case SHUTDOWN_CONFIG:
+			vSaveShutdown();
+			break;
+		case CALIB_INPUT_1:
 			vSaveCalib(1);
 			break;
 		case CALIB_INPUT_2:
 			vSaveCalib(2);
 			break;
-		case CALIB_INPUT_3:			
+		case CALIB_INPUT_3:
 			vSaveCalib(3);
 			break;
 		case CALIB_INPUT_4:
@@ -187,7 +185,7 @@ void EEPROMUtils::saveModuleConfig(unsigned char saveWhat)
 		case CALIB_INPUT_6:
 			vSaveCalib(6);
 			break;
-		case OUT1_BACKOFF_TIME:                   
+		case OUT1_BACKOFF_TIME:
 			vSaveOutBackOff(1);
 			break;
 		case OUT2_BACKOFF_TIME:
@@ -210,19 +208,19 @@ void EEPROMUtils::vSaveCalib(unsigned char sensor)
 			eeprom_write_block(&CalibParams, (void *)EEPROM_CALIB_STUFF, sizeof(CalibParams));
 			break;
 		case 2:
-			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 3:
-			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+2*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 2 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 4:
-			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+3*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 3 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 5:
-			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+4*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 4 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 6:
-			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+5*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_write_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 5 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 	}
 }
@@ -235,19 +233,19 @@ void EEPROMUtils::vReadCalib(unsigned char sensor)
 			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF), sizeof(CalibParams));
 			break;
 		case 2:
-			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 3:
-			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+2*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 2 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 4:
-			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+3*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 3 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 5:
-			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+4*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 4* sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 		case 6:
-			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF+5*sizeof(CalibParams)), sizeof(CalibParams));
+			eeprom_read_block(&CalibParams, (void *)(EEPROM_CALIB_STUFF + 5 * sizeof(CalibParams)), sizeof(CalibParams));
 			break;
 	}
 }
@@ -268,22 +266,22 @@ void EEPROMUtils::vSaveOutBackOff(unsigned char output)
 		case 4:
 			eeprom_write_block(&minutes2BackOffOut4, (void *)(EEPROM_OUT4_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 5:
+		case 5:
 			eeprom_write_block(&minutes2BackOffOut5, (void *)(EEPROM_OUT5_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 6:
+		case 6:
 			eeprom_write_block(&minutes2BackOffOut6, (void *)(EEPROM_OUT6_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 7:
+		case 7:
 			eeprom_write_block(&minutes2BackOffOut7, (void *)(EEPROM_OUT7_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 8:
+		case 8:
 			eeprom_write_block(&minutes2BackOffOut8, (void *)(EEPROM_OUT8_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 9:
+		case 9:
 			eeprom_write_block(&minutes2BackOffOut9, (void *)(EEPROM_OUT9_BACKOFF_TIME), sizeof(unsigned char));
 			break;
-        case 10:
+		case 10:
 			eeprom_write_block(&minutes2BackOffOut10, (void *)(EEPROM_OUT10_BACKOFF_TIME), sizeof(unsigned char));
 			break;
 	}

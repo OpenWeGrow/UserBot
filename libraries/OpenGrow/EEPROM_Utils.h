@@ -9,13 +9,12 @@
 #ifndef EEPROM_UTILS_h
 #define EEPROM_UTILS_h
 
-#define SAVE_SLAVEADRESS     				0x02
-#define SAVE_SERIALNUMBER					0x05  
-#define SAVE_MASTERID   					0x06  
-#define SAVE_INITSTATE				    	0x08  
+#define SAVE_SLAVEADRESS				0x02
+#define SAVE_SERIALNUMBER				0x05
+#define SAVE_MASTERID					0x06
+#define SAVE_INITSTATE					0x08
 
-
-#define CALIB_INPUT      				0x1D
+#define CALIB_INPUT						0x1D
 #define CALIB_INPUT_1   				0x1D
 #define CALIB_INPUT_2    				0x1E
 #define CALIB_INPUT_3   				0x1F
@@ -38,9 +37,10 @@
 #define OUT7_BACKOFF_TIME  				0x2E
 #define OUT8_BACKOFF_TIME  				0x2F
 #define OUT9_BACKOFF_TIME  				0x30
-#define OUT10_BACKOFF_TIME  			0x31
+#define OUT10_BACKOFF_TIME				0x31
 
-#define MILLIS_PER_MINUTE 60000  
+#define MILLIS_PER_MINUTE 60000
+
 struct parameters_Moisture
 {
 	//unsigned long time;
@@ -61,6 +61,7 @@ extern unsigned char minutes2BackOffOut7;
 extern unsigned char minutes2BackOffOut8;
 extern unsigned char minutes2BackOffOut9;
 extern unsigned char minutes2BackOffOut10;
+
 class EEPROMUtils
 {
 	public:
@@ -72,14 +73,11 @@ class EEPROMUtils
 		void vSaveBotID(unsigned char newBotID);
 		void saveModuleConfig(unsigned char saveWhat);
 		void resetGroBot2Defaults();
-		
 		void vSaveCalib(unsigned char sensor);
-		void vReadCalib(unsigned char sensor);		
-        
+		void vReadCalib(unsigned char sensor);
 		void vSaveShutdown();
-		void vSaveOutBackOff(unsigned char output);  
+		void vSaveOutBackOff(unsigned char output);
 		void vReadOutBackOff(unsigned char output);
-  
 		void dumpEEPROM ();
 };
 #endif //EEPROM_UTILS_h

@@ -9,13 +9,10 @@
 #ifndef __OPENBUS_H__
 #define __OPENBUS_H__
 
-
 //Uncomment only when using Serial Port for RS-485
 //#define RS485
 
-
 #include "RF24.h"	
-
 
 //Calib Types - Used in SOILBOT for moisture and TankBot for PH and EC
 #define CALIB_HIGH     0x01
@@ -61,27 +58,19 @@
 #define ACT_AUTHENTICATION          		0xCC
 #define ACT_AUTHENTICATION_MASTER_RESPONSE  0xCD
 
-
 // OpenBus exception codes
-		/**
-			OpenBus protocol illegal function exception.   
-		*/		
-	
-		
+/**
+	OpenBus protocol illegal function exception.   
+*/
 
+const unsigned char ucOBSuccess              = 0xCC;        
+const unsigned char ucOBError                = 0xDD;
+const unsigned char ucOBBackOff              = 0xE6;		
+const unsigned char ucOBAuthNew              = 0xA0;
+const unsigned char ucOBAuthExists           = 0xA1;
+const unsigned char ucOBAuthOk               = 0xA2;
+const unsigned char ucOBInvalidCRC           = 0xE3;
 
-		const unsigned char ucOBSuccess              = 0xCC;        
-		const unsigned char ucOBError                = 0xDD;
-        const unsigned char ucOBBackOff              = 0xE6;		
-		const unsigned char ucOBAuthNew              = 0xA0;
-		const unsigned char ucOBAuthExists           = 0xA1;
-		const unsigned char ucOBAuthOk               = 0xA2;
-		const unsigned char ucOBInvalidCRC           = 0xE3;
-
-		
-
-	
-		
 class OpenBus
 {
 	private:
@@ -89,11 +78,9 @@ class OpenBus
 	protected:
 
 	public:		
-		
 		OpenBus();	
 		unsigned char usOpenBusReply(unsigned char * dataIn, unsigned char * dataOut,RF24 comPort, unsigned char channel);
 		unsigned char usOpenBusCreateAuthFrame(unsigned char * dataOut,RF24 comPort, unsigned char channel);
-		
 };
 
 #endif // __OPENBUS_H__

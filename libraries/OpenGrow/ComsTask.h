@@ -9,11 +9,7 @@
 #ifndef __COMSTASK_H__
 #define __COMSTASK_H__
 
-
-
-
 #include "RF24.h"	
-
 #include "EEPROM_Utils.h"
 
 #define AUTH_CHANNEL  0x00
@@ -25,10 +21,10 @@
  */
  extern unsigned short memadd;
  enum machineState {
-	  INIT = 0,
-	  SEARCH_MASTER,
-	  GET_COMMAND
-	};
+	INIT = 0,
+	SEARCH_MASTER,
+	GET_COMMAND
+};
 
 extern machineState mState;
 extern EEPROMUtils vEEPROMUtils;
@@ -45,26 +41,19 @@ extern unsigned long ticksOut8;
 extern unsigned long ticksOut9;
 extern unsigned long ticksOut10;
 
-
 void saveModuleConfig(void);
 
 class ComsTask
 {
-private:
-	
-	unsigned char data [256];	
+	private:
+		unsigned char data [256];
 
-protected:
+	protected:
 
-public:
-	
-	ComsTask(void);
-	void(* resetFuncCom) (void) = 0; //declare reset function @ address 0
-    
-    
-	void vGoComsTask(RF24 comPort);
-  
-	
+	public:
+		ComsTask(void);
+		void(* resetFuncCom) (void) = 0; //declare reset function @ address 0
+		void vGoComsTask(RF24 comPort);
 };
 
 #endif // __COMSTASK_H__

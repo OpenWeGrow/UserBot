@@ -1,14 +1,14 @@
 /*
-	CRC16.cpp is a library for the Arduino System.  It complies with ModBus protocol, customized for exchanging 
+	CRC16.cpp is a library for the Arduino System.  It complies with ModBus protocol, customized for exchanging
 	information between Industrial controllers and the Arduino board.
 	
 	Copyright (c) 2012 Tim W. Shilling (www.ShillingSystems.com)
-	Arduino Modbus Slave is free software: you can redistribute it and/or modify it under the terms of the 
-	GNU General Public License as published by the Free Software Foundation, either version 3 of the License, 
+	Arduino Modbus Slave is free software: you can redistribute it and/or modify it under the terms of the
+	GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
 	or (at your option) any later version.
 
-	Arduino Modbus Slave is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Arduino Modbus Slave is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the GNU General Public License for more details.
 
 	To get a copy of the GNU General Public License see <http://www.gnu.org/licenses/>.
@@ -35,8 +35,8 @@ PROGMEM const unsigned char auchCRCHi[] = {
 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
 0x40
-} ;
-  
+};
+
 PROGMEM const unsigned char auchCRCLo[] = {
 0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7, 0x05, 0xC5, 0xC4,
 0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
@@ -56,28 +56,26 @@ PROGMEM const unsigned char auchCRCLo[] = {
 0x48, 0x49, 0x89, 0x4B, 0x8B, 0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
 0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83, 0x41, 0x81, 0x80,
 0x40
-} ;
+};
 
 CRC::CRC()
 {
 
 }
 
-unsigned short CRC::CRC16 ( unsigned char * puchMsg, unsigned short usDataLen, unsigned char * crc16 )
+unsigned short CRC::CRC16(unsigned char * puchMsg, unsigned short usDataLen, unsigned char * crc16)
 {
-unsigned char uchCRCHi = 0xff;
-unsigned char uchCRCLo = 0xff;
-unsigned int uIndex;
-
-while(usDataLen--)
-{
-  uIndex = uchCRCLo ^ *puchMsg++;
-  uchCRCLo = uchCRCHi ^ pgm_read_byte(auchCRCHi + uIndex);
-  uchCRCHi = pgm_read_byte(auchCRCLo + uIndex);
-  
-}
-crc16[0] = uchCRCHi;
-crc16[1] = uchCRCLo;
-return (uchCRCHi << 8 | uchCRCLo);
+	unsigned char uchCRCHi = 0xff;
+	unsigned char uchCRCLo = 0xff;
+	unsigned int uIndex;
+	while(usDataLen--)
+	{
+		uIndex = uchCRCLo ^ *puchMsg++;
+		uchCRCLo = uchCRCHi ^ pgm_read_byte(auchCRCHi + uIndex);
+		uchCRCHi = pgm_read_byte(auchCRCLo + uIndex);
+	}
+	crc16[0] = uchCRCHi;
+	crc16[1] = uchCRCLo;
+	return (uchCRCHi << 8 | uchCRCLo);
 }
 /****************************************************************************/
