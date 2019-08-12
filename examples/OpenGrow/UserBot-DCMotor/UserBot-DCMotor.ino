@@ -17,11 +17,8 @@ The code is based on Non-Preemptive Multitasking, so you can add any more tasks 
 #include "GroBot_Variables.h"
 #include <Wire.h>
 
-
 #include "nRF24L01.h"
 #include "RF24.h"		
-
-
 
 #include "ComsTask.h"
 #include "SerialTask.h"
@@ -44,12 +41,10 @@ void setup(void)
 	//inputs[]/outputs[]
 	//Each array has a max of 10 positions
 	//For each sensor or output the user must define:	// 
-	//     
+	//
 	//     - The pin that is where the sensor/device is connected  - ensure zero(0) if not used
 	//     - The type of the sensor/output                         - ensure OPEN_DEFAULT if not used
-	//	
-	
-
+	//
 	inputs[INPUT_INDEX0].arduinoPin = 0;    //Unused Input
 	inputs[INPUT_INDEX1].arduinoPin = 0;    //Unused Input
 	inputs[INPUT_INDEX2].arduinoPin = 0;    //Unused Input
@@ -116,7 +111,6 @@ void setup(void)
 	TCCR1B |= (1 << CS12) | (1 << CS10);  
 	// enable timer compare interrupt
 	TIMSK1 |= (1 << OCIE1A);
-  
 }
 
 //Main program loop
@@ -138,7 +132,6 @@ void loop(void)
     vSerialTask.vGoSerialTask(radio);	
 	//IO Management Task
     vSensorsTask.GoSensorsTask();
-	
 }
 
 //Timer Interrupt Handler
@@ -164,7 +157,5 @@ SIGNAL(TIMER1_COMPA_vect)
 		Serial.println(outputs[OUTPUT_INDEX0].speed,DEC);
 		Serial.println("");
 	}
-	
 }
 /****************************************************************************/
-

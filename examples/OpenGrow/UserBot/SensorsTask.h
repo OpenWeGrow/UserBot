@@ -25,7 +25,6 @@ private:
 protected:
 
 public:
-	
 	SensorsTask(void);
 	void GoSensorsTask(void);
 	float calcTemp(int raw);

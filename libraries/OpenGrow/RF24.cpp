@@ -7,20 +7,16 @@
  version 2 as published by the Free Software Foundation.
  */
 
- 
 #include "nRF24L01.h"
 #include "RF24_config.h"
 #include "RF24.h"
 #include "GroBot_Variables.h"
 
-
-uint64_t pipes[6] = {  0xc886799aE0LL, 0xc886799aE1LL , 0xc886799aE2LL, 0xc886799aE3LL, 0xc886799aD4LL, 0xc886799aE5LL };
+uint64_t pipes[6] = { 0xc886799aE0LL, 0xc886799aE1LL , 0xc886799aE2LL, 0xc886799aE3LL, 0xc886799aD4LL, 0xc886799aE5LL };
   
-
 /****************************************************************************/
- //Communication pipes
+//Communication pipes
  
-
 unsigned char tempPipe[5];
 //bool frameResult = true;  //Frame send/receive result
 bool tx_ok, tx_fail;  //Data Sent validations bits
@@ -31,8 +27,6 @@ unsigned char payloadSize = 32;
 #ifdef SPREAD_RF_CHANNELS
     unsigned char newRFType = 0;
 #endif
-
-
 
 void RF24::csn(int mode)
 {
@@ -268,7 +262,6 @@ void RF24::printDetails(void)
 	Serial.print("RF: ");
 	Serial.println(read_register(RF_SETUP),HEX);
 	
-	
 	Serial.print("RX_ADDR_P0-1: ");
 	print_address_register(RX_ADDR_P0,2);
 	
@@ -280,11 +273,9 @@ void RF24::printDetails(void)
 	Serial.print(read_register(RX_ADDR_P4),HEX);
 	Serial.print(" - 0x");
 	Serial.print(read_register(RX_ADDR_P5),HEX);	
-	
 
 	Serial.print("TX_ADDR");
 	print_address_register(TX_ADDR);
-
 }
 
 /****************************************************************************/
@@ -343,11 +334,9 @@ void RF24::begin(void)
 #ifdef SPREAD_RF_CHANNELS    
   switch(botType)
   {
-      
       case USERBOT:
            newRFType = 4;
-          break;         
-          
+          break;
   }
 #endif
   
@@ -361,7 +350,7 @@ void RF24::begin(void)
     #endif
   //Serial.println("!!");
   //Serial.println((uint8_t)(((botType-1)*5) + (25*(masterID-1))),DEC);
-  
+
   // Flush buffers
   flush_rx();
   flush_tx();
@@ -373,9 +362,8 @@ void RF24::startListening(void)
 {
   write_register(CONFIG, read_register(CONFIG) | _BV(PWR_UP) | _BV(PRIM_RX));
   write_register(STATUS, _BV(RX_DR) | _BV(TX_DS) | _BV(MAX_RT) );
-  
- 
-  // Restore the pipe0 adddress, if exists
+
+  // Restore the pipe0 address, if exists
   if (pipe0_reading_address)
     write_register(RX_ADDR_P0, reinterpret_cast<const uint8_t*>(&pipe0_reading_address), 5);
 
@@ -455,16 +443,13 @@ bool RF24::write( const void* buf, uint8_t len )
   // * There is an ack packet waiting (RX_DR)
   
   whatHappened(tx_ok,tx_fail,ack_payload_available);
-  
 
   result = tx_ok;
-
 
   // Handle the ack packet
   if ( ack_payload_available )
   {
     ack_payload_length = getDynamicPayloadSize();
-
   }
 
   // Yay, we are done.
@@ -601,7 +586,6 @@ bool RF24::available(uint8_t* pipe_num)
 {
   uint8_t status = get_status();
 
-
   bool result = ( status & _BV(RX_DR) );
 
   if (result)
@@ -635,7 +619,6 @@ bool RF24::read( void* buf, uint8_t len )
 
 unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 {
-
     unsigned char status;
 	uint32_t start_at = 0;
 	const uint32_t timeout_at = 1000; //ms to wait for timeout
@@ -712,7 +695,7 @@ void RF24::openWritingPipe(uint64_t value)
 {
   // Note that AVR 8-bit uC's store this LSB first, and the NRF24L01(+)
   // expects it LSB first too, so we're good.
-  //Serial.print("Listenning on Channel: ");
+  //Serial.print("Listening on Channel: ");
   //Serial.println((uint8_t)(BASE_RF_CHANNEL + (uint8_t)(value & 0x0F)*2),DEC);
   
   if(slaveAddress!=0xFF)
@@ -797,20 +780,18 @@ void RF24::openReadingPipe(uint8_t child, uint64_t address)
 	
         //Serial.println("!!");
         //Serial.println((uint8_t)(((botType-1)*5) + (25*(masterID-1))),DEC);
-  
+
 	//setChannel((uint8_t)BASE_RF_CHANNEL);
 	//Serial.println((uint8_t)BASE_RF_CHANNEL,DEC);
   }
 
-  
-  
   if (child == 0)
     pipe0_reading_address = address;
 
    if (pipe0_reading_address)
     write_register(RX_ADDR_P0, reinterpret_cast<const uint8_t*>(&pipe0_reading_address), 5);
 
-   //Set a diferent pipe on add 1 for each bot
+   //Set a different pipe on add 1 for each bot
     tempPipe[0] = serialNumber[7];
     tempPipe[1] = serialNumber[6];
     tempPipe[2] = serialNumber[5];
@@ -826,8 +807,6 @@ void RF24::openReadingPipe(uint8_t child, uint64_t address)
 
     write_register(RX_PW_P0,payload_size);
     write_register(RX_PW_P1,payload_size);
-
-  
 }
 
 /****************************************************************************/
@@ -1170,4 +1149,3 @@ bool RF24::checkArray(unsigned char * array, unsigned char value)
 }
 
 // vim:ai:cin:sts=2 sw=2 ft=cpp
-

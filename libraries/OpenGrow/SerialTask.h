@@ -10,7 +10,6 @@
 #define __SERIALTASK_H__
 #include "RF24.h"
 
-
 extern unsigned short memadd;
  
  enum serialMachineState {
@@ -18,20 +17,17 @@ extern unsigned short memadd;
 	  GET_DATA
 	};
 
-
 class SerialTask
 {
 private:
-	
 
 protected:
 
 public:
-	
 	SerialTask(void);
 	void vGoSerialTask(RF24 comPort);	
 	void printDisclamer();
-	
+
 };
 
 #endif // __SERIALTASK_H__

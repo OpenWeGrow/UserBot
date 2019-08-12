@@ -18,12 +18,10 @@ extern sensorsMachineState snsState;
 class SensorsTask
 {
 private:
-	
 
 protected:
 
 public:
-	
 	SensorsTask(void);
 	void GoSensorsTask(void);
 

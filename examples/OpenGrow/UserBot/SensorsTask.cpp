@@ -106,9 +106,7 @@ float SensorsTask::getAnalogRead(unsigned char pin)
 	}
 	
 	rawValue = rawValue/MAX_TEMP_SAMPLE;
-	return rawValue;            
-			
-	
+	return rawValue;
 }
 
 /****************************************************************************/

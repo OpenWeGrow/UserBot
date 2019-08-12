@@ -40,13 +40,10 @@ void SerialTask::vGoSerialTask(RF24 comPort)
 	switch(stState)
 	{	
 		case CHECK_SERIAL:
-            
             if (Serial.available() > 0) 
             {
-                
               c = Serial.read();
-         
-			 
+
 			  if ( c == 'D')
 			  {
 				printDisclamer();
@@ -78,71 +75,60 @@ void SerialTask::vGoSerialTask(RF24 comPort)
               {                  
                   c=' ';
               }
-            
             }
-		break;
+			break;
 		
 		case GET_DATA:
-			
-			
-			
 			switch(c)
 			{
 				case ('S'):
-                    
-                if (Serial.available() > 0) 
-                {
-      
-                    c = Serial.read();
-                   
-                    while(sti<10)
-                    {
-                        if (Serial.available() > 0) 
-                        {
-                            uartData[sti++] = c;	
-                            c = Serial.read();
-                        }						
-                    }
-                    
-                    unsigned long longSerialNumber;
-					
-					if(sti == 10)
+					if (Serial.available() > 0) 
 					{
-						sti= 0;
-						read= 0;
-						stState = CHECK_SERIAL;
+						c = Serial.read();
+					   
+						while(sti<10)
+						{
+							if (Serial.available() > 0) 
+							{
+								uartData[sti++] = c;	
+								c = Serial.read();
+							}						
+						}
 						
-						//Lock String and Remove first type digit
-						uartData[0]= 0x30; //0x00 in ASCII
-						uartData[10]= '\0';
-						longSerialNumber = 0;
+						unsigned long longSerialNumber;
 						
-						//Convert String to Long
-						longSerialNumber = strtoul( uartData, NULL, 10 );
-						sprintf(uartData, "%lu", longSerialNumber);
+						if(sti == 10)
+						{
+							sti= 0;
+							read= 0;
+							stState = CHECK_SERIAL;
+							
+							//Lock String and Remove first type digit
+							uartData[0]= 0x30; //0x00 in ASCII
+							uartData[10]= '\0';
+							longSerialNumber = 0;
+							
+							//Convert String to Long
+							longSerialNumber = strtoul( uartData, NULL, 10 );
+							sprintf(uartData, "%lu", longSerialNumber);
 
-						//Convert Long to unsigned char Array
-						serialNumber[7] =  (unsigned char)(longSerialNumber & 0xFF);
-						serialNumber[6] =  (unsigned char)(longSerialNumber >> 8 & 0xFF);
-						serialNumber[5] =  (unsigned char)(longSerialNumber >> 16 & 0xFF);
-						serialNumber[4] =  (unsigned char)(longSerialNumber >> 24 & 0xFF);
+							//Convert Long to unsigned char Array
+							serialNumber[7] =  (unsigned char)(longSerialNumber & 0xFF);
+							serialNumber[6] =  (unsigned char)(longSerialNumber >> 8 & 0xFF);
+							serialNumber[5] =  (unsigned char)(longSerialNumber >> 16 & 0xFF);
+							serialNumber[4] =  (unsigned char)(longSerialNumber >> 24 & 0xFF);
 
-						vEEPROMUtils.saveModuleConfig(SAVE_SERIALNUMBER);
-						Serial.println(DISC_SAVED_DATA);
-				
-						resetFunc();
+							vEEPROMUtils.saveModuleConfig(SAVE_SERIALNUMBER);
+							Serial.println(DISC_SAVED_DATA);
 					
+							resetFunc();
+						}
 					}
-                }
-				
-				break;
-    
-                
+					break;
+
 				case 'M':
-                    
                     if (Serial.available() > 0) 
                     {
-            
                         c = Serial.read();
                         uartData[0] = c;
                         uartData[1] = '\0';
@@ -153,15 +139,12 @@ void SerialTask::vGoSerialTask(RF24 comPort)
 		
 						resetFunc();
                     }
-				
-				break;
+					break;
 			}
 			
 		break;
 	}
-  
 }
-
 
 void SerialTask::printDisclamer(void)
 {
@@ -176,7 +159,6 @@ void SerialTask::printDisclamer(void)
 	longSerialNumber = (longSerialNumber | serialNumber[7]);
 
 	Serial.println("UserBot! Ready");
-
 
 	Serial.print(F("N: \t"));
 	Serial.println(name);	
@@ -207,7 +189,7 @@ void SerialTask::printDisclamer(void)
 	Serial.print("MID: \t");
 	Serial.println(masterID,DEC);	
 	
-	//Print Slave Adress
+	//Print Slave Address
 	Serial.print("SAdd: \t");
 	Serial.println(slaveAddress,HEX);	
 
@@ -219,10 +201,6 @@ void SerialTask::printDisclamer(void)
     Serial.print(fwVersion[2],DEC);
 	Serial.print(".");
     Serial.println(fwVersion[3],DEC);
-
-        
-
 }
-
 
 /****************************************************************************/
