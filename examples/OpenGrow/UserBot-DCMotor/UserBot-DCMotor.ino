@@ -67,7 +67,7 @@ void setup(void)
 	inputs[INPUT_INDEX8].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX9].type = OPEN_DEFAULT;	//Unused Input
 	
-	outputs[OUTPUT_INDEX0].arduinoPin = 5;  //LED Pin
+	outputs[OUTPUT_INDEX0].arduinoPin = 5;  //DC Motor as Peristaltic Pump Pin
 	outputs[OUTPUT_INDEX1].arduinoPin = 0;	//Unused Output
 	outputs[OUTPUT_INDEX2].arduinoPin = 0;	//Unused Output
 	outputs[OUTPUT_INDEX3].arduinoPin = 0;	//Unused Output
