@@ -17,8 +17,8 @@
 
 unsigned char need2Shutdown = false;
 unsigned long timeout2Shutdown = 0;
-extern unsigned char shutdownFlag = 1; //Default shutdown ON
-extern unsigned long shutdownTimeout = 60000; //Default waiting time 1 minute
+unsigned char shutdownFlag = 1; //Default shutdown ON
+unsigned long shutdownTimeout = 60000; //Default waiting time 1 minute
 unsigned long ticksOut1 = 0;
 unsigned long ticksOut2 = 0;
 unsigned long ticksOut3 = 0;

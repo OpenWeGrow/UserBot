@@ -41,6 +41,9 @@ extern unsigned long ticksOut8;
 extern unsigned long ticksOut9;
 extern unsigned long ticksOut10;
 
+extern unsigned char shutdownFlag; //Default shutdown ON
+extern unsigned long shutdownTimeout; //Default waiting time 1 minute
+
 void saveModuleConfig(void);
 
 class ComsTask
