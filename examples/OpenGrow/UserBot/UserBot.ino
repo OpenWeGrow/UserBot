@@ -89,14 +89,14 @@ void setup(void)
 	outputs[OUTPUT_INDEX8].type = OPEN_DEFAULT;	//Unused Output
 	outputs[OUTPUT_INDEX9].type = OPEN_DEFAULT;	//Unused Output
 
-    Serial.begin(230400);
+	Serial.begin(230400);
 	Serial.setTimeout(10);
 
 	vComsTask.vGoComsTask(radio);
 
 	vSerialTask.printDisclamer();
 
-    radio.printDetails();
+	radio.printDetails();
 	
 	//Timed Interrupt for debug Output
 	//Timer1 interrupt at 1Hz
@@ -115,33 +115,42 @@ void setup(void)
 
 //Main program loop
 void loop(void)
-{	
-    //If the serial Number is the default one, the module does not communicate and awaits a valid serial number definition
+{
+	//If the serial Number is the default one, the module does not communicate and awaits a valid serial number definition
 	if(!(serialNumber[4] == DEFAULT_SERIALNUMBER_4 && serialNumber[5] == DEFAULT_SERIALNUMBER_5 && serialNumber[6] == DEFAULT_SERIALNUMBER_6 && serialNumber[7] == DEFAULT_SERIALNUMBER_7))
-	{	
+	{
 		//RF Task
 		vComsTask.vGoComsTask(radio);
 	}
-	else
+	/*else
 	{
 		//If no serial number is defined, to module gets stuck here until a valid serial number is defined
 		Serial.println("RFH");
-	}
-		
-    //UART Task
-    vSerialTask.vGoSerialTask(radio);	
+	}*/
+
+	//UART Task
+	vSerialTask.vGoSerialTask(radio);
 	//IO Management Task
-    vSensorsTask.GoSensorsTask();
+	vSensorsTask.GoSensorsTask();
 }
 
 //Timer Interrupt Handler
-SIGNAL(TIMER1_COMPA_vect) 
+SIGNAL(TIMER1_COMPA_vect)
 {
 	timerCounter++;
-	
-    if(timerCounter == TIME_2_PRINT_DEBUG)
-    {
+
+	if(timerCounter == TIME_2_PRINT_DEBUG)
+	{
 		timerCounter=0;
+
+		//If the serial Number is the default one, the module does not communicate and awaits a valid serial number definition
+		if((serialNumber[4] == DEFAULT_SERIALNUMBER_4 && serialNumber[5] == DEFAULT_SERIALNUMBER_5 && serialNumber[6] == DEFAULT_SERIALNUMBER_6 && serialNumber[7] == DEFAULT_SERIALNUMBER_7))
+		{	
+			//RF Task
+			Serial.println("RFH");
+			Serial.println("");
+		}
+
 		//Dump sampled data in the UART
 
 		Serial.print(F("Temperature:"));Serial.print(inputs[INPUT_INDEX1].value,2);
@@ -150,17 +159,17 @@ SIGNAL(TIMER1_COMPA_vect)
 		Serial.print(F("Button-"));
 		if(inputs[INPUT_INDEX0].value == 0)
 		{
-			Serial.println(F("OFF"));			
+			Serial.println(F("OFF"));
 		}
 		else
 		{
 			Serial.println(F("ON"));
 		}
 	
-	    Serial.print(F("LED-"));
+		Serial.print(F("LED-"));
 		if(outputs[OUTPUT_INDEX0].value == 0)
 		{
-			Serial.print(F("OFF Speed-"));			
+			Serial.print(F("OFF Speed-"));
 		}
 		else
 		{
