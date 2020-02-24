@@ -16,8 +16,8 @@ Output 3 - Digital Output 5<br />
 Output 4 - Digital Output 6<br />
 Output 5 - Digital Output 7<br />
 Output 6 - Digital Output 8<br /> 
-Output 7 - Digital Output 9<br />
-Output 8 - Digital Output 10<br />
+Output 7 - Analog Output 0<br />
+Output 8 - Analog Output 1<br />
 
 <br />
 <br />

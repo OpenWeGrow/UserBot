@@ -72,8 +72,8 @@ void setup(void)
 	outputs[OUTPUT_INDEX3].arduinoPin = 6;	//Output 4
 	outputs[OUTPUT_INDEX4].arduinoPin = 7;	//Output 5
 	outputs[OUTPUT_INDEX5].arduinoPin = 8;	//Output 6
-	outputs[OUTPUT_INDEX6].arduinoPin = 9;	//Output 7
-	outputs[OUTPUT_INDEX7].arduinoPin = 10;	//Output 8
+	outputs[OUTPUT_INDEX6].arduinoPin = A0;	//Output 7
+	outputs[OUTPUT_INDEX7].arduinoPin = A1;	//Output 8
 	outputs[OUTPUT_INDEX8].arduinoPin = 0;	//Unused Output
 	outputs[OUTPUT_INDEX9].arduinoPin = 0;	//Unused Output
 	
