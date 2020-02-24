@@ -66,9 +66,6 @@ class EEPROMUtils
 {
 	public:
 		EEPROMUtils();
-		void saveGrowRoomID(unsigned char peripheralType,unsigned char peripheralID,unsigned char newGrowRoomID);
-		void saveGrowID(unsigned char peripheralType,unsigned char peripheralID,unsigned char newGrowID);
-		void saveIOType(unsigned char peripheralType,unsigned char peripheralID,unsigned char newType);
 		void vSaveSlaveAdress(unsigned char newSlaveAdress);
 		void vSaveBotID(unsigned char newBotID);
 		void saveModuleConfig(unsigned char saveWhat);
