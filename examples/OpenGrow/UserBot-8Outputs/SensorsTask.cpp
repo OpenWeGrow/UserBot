@@ -11,7 +11,7 @@
 #include <Arduino.h>
 #include "ComsTask.h"
 
-
+#define MAX_USER_OUTPUTS 8
 
 sensorsMachineState snsState;
 unsigned char stMachineExternalControl = 0x00;
@@ -19,6 +19,7 @@ unsigned char stMachineExternalControl = 0x00;
 #define ArduinoVRef  5
 
 int time= 0;
+unsigned char outputIndex2Act = 0;
 
 SensorsTask::SensorsTask(void)
 {
@@ -28,8 +29,8 @@ SensorsTask::SensorsTask(void)
     /*Here you need to set your used pins as inputs or outputs*/
 	//pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
     //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
-
-	pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
+    
+    pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
     pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
     pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
     pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
@@ -63,137 +64,99 @@ void SensorsTask::GoSensorsTask(void)
 	switch(snsState)
     {
 		case INIT_SENSORS:
-			//Use this state in the machine to initialize any sensor you may need
+            //Use this state in the machine to initialize any sensor you may need
 			snsState = ACT_ON_IOS;
 			break;
 	
 		case ACT_ON_IOS:		
-			//Act on Output 1
-			if(outputs[OUTPUT_INDEX0].value>0)
-			{
-				if((millis() - ticksOut1) > (MILLIS_PER_MINUTE * minutes2BackOffOut1) )
-				{
-					if(outputs[OUTPUT_INDEX0].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX0].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX0].arduinoPin, outputs[OUTPUT_INDEX0].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX0].arduinoPin, LOW);
-			}
-            //Act on Output 2
-			if(outputs[OUTPUT_INDEX1].value>0)
-			{
-				if((millis() - ticksOut2) > (MILLIS_PER_MINUTE * minutes2BackOffOut2) )
-				{
-					if(outputs[OUTPUT_INDEX1].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX1].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX1].arduinoPin, outputs[OUTPUT_INDEX1].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX1].arduinoPin, LOW);
-			}
-            //Act on Output 3
-			if(outputs[OUTPUT_INDEX2].value>0)
-			{
-				if((millis() - ticksOut3) > (MILLIS_PER_MINUTE * minutes2BackOffOut3) )
-				{
-					if(outputs[OUTPUT_INDEX2].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX2].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX2].arduinoPin, outputs[OUTPUT_INDEX2].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX2].arduinoPin, LOW);
-			}
-            //Act on Output 4
-			if(outputs[OUTPUT_INDEX3].value>0)
-			{
-				if((millis() - ticksOut4) > (MILLIS_PER_MINUTE * minutes2BackOffOut4) )
-				{
-					if(outputs[OUTPUT_INDEX3].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX3].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX3].arduinoPin, outputs[OUTPUT_INDEX3].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX3].arduinoPin, LOW);
-			}
-            //Act on Output 5
-			if(outputs[OUTPUT_INDEX4].value>0)
-			{
-				if((millis() - ticksOut5) > (MILLIS_PER_MINUTE * minutes2BackOffOut5) )
-				{
-					if(outputs[OUTPUT_INDEX4].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX4].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX4].arduinoPin, outputs[OUTPUT_INDEX4].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX4].arduinoPin, LOW);
-			}
-            //Act on Output 6
-			if(outputs[OUTPUT_INDEX5].value>0)
-			{
-				if((millis() - ticksOut6) > (MILLIS_PER_MINUTE * minutes2BackOffOut6) )
-				{
-					if(outputs[OUTPUT_INDEX5].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX5].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX5].arduinoPin, outputs[OUTPUT_INDEX5].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX5].arduinoPin, LOW);
-			}
-            //Act on Output 7
-			if(outputs[OUTPUT_INDEX6].value>0)
-			{
-				if((millis() - ticksOut7) > (MILLIS_PER_MINUTE * minutes2BackOffOut7) )
-				{
-					if(outputs[OUTPUT_INDEX6].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX6].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX6].arduinoPin, outputs[OUTPUT_INDEX6].speed);  
-				} 
-			}
-			else
-			{
-
-				digitalWrite(outputs[OUTPUT_INDEX6].arduinoPin, LOW);
-			}
-            //Act on Output 8
-			if(outputs[OUTPUT_INDEX7].value>0)
-			{
-				if((millis() - ticksOut8) > (MILLIS_PER_MINUTE * minutes2BackOffOut8) )
-				{
-					if(outputs[OUTPUT_INDEX7].speed == 0)
-						digitalWrite(outputs[OUTPUT_INDEX7].arduinoPin, HIGH);
-					else
-						analogWrite(outputs[OUTPUT_INDEX7].arduinoPin, outputs[OUTPUT_INDEX7].speed);  
-				} 
-			}
-			else
-			{
-				digitalWrite(outputs[OUTPUT_INDEX7].arduinoPin, LOW);
-			}
+            //Act on Output 1
+            for(outputIndex2Act =0 ; outputIndex2Act<MAX_USER_OUTPUTS; outputIndex2Act++)
+                actOnOutput(outputIndex2Act); 
             
 			snsState = INIT_SENSORS;
 			break;      
 	}
 }
+
+void SensorsTask::actOnOutput(unsigned char indexOutput)
+{
+    unsigned long outputTicks;
+    unsigned char outputMinutes2BackOff;
+    
+    //Search the correct timeout for the cooldown feature
+    switch(indexOutput)
+    {
+        case OUTPUT_INDEX0:
+            outputTicks = ticksOut1;
+            outputMinutes2BackOff = minutes2BackOffOut1;
+        break;
+        
+        case OUTPUT_INDEX1:
+            outputTicks = ticksOut2;
+            outputMinutes2BackOff = minutes2BackOffOut2;
+        break;
+        
+        case OUTPUT_INDEX2:
+            outputTicks = ticksOut3;
+            outputMinutes2BackOff = minutes2BackOffOut3;
+        break;
+        
+        case OUTPUT_INDEX3:
+            outputTicks = ticksOut4;
+            outputMinutes2BackOff = minutes2BackOffOut4;
+        break;
+        
+        case OUTPUT_INDEX4:
+            outputTicks = ticksOut5;
+            outputMinutes2BackOff = minutes2BackOffOut5;
+        break;
+        
+        case OUTPUT_INDEX5:
+            outputTicks = ticksOut6;
+            outputMinutes2BackOff = minutes2BackOffOut6;
+        break;
+        
+        case OUTPUT_INDEX6:
+            outputTicks = ticksOut7;
+            outputMinutes2BackOff = minutes2BackOffOut7;
+        break;
+        
+        case OUTPUT_INDEX7:
+            outputTicks = ticksOut8;
+            outputMinutes2BackOff = minutes2BackOffOut8;
+        break;
+        
+        case OUTPUT_INDEX8:
+            outputTicks = ticksOut9;
+            outputMinutes2BackOff = minutes2BackOffOut9;
+        break;
+        
+        case OUTPUT_INDEX9:
+            outputTicks = ticksOut10;
+            outputMinutes2BackOff = minutes2BackOffOut10;
+        break;
+            
+    }
+    
+    
+    if(outputs[indexOutput].value>0)
+    {
+        //If not in cooldown turn on the output
+        if((millis() - outputTicks) > (MILLIS_PER_MINUTE * outputMinutes2BackOff) )
+        {
+            if(outputs[indexOutput].speed == 0)
+                digitalWrite(outputs[indexOutput].arduinoPin, HIGH);
+            else
+                analogWrite(outputs[indexOutput].arduinoPin, outputs[indexOutput].speed);  
+        } 
+    }
+    else
+    {
+        //Shutdown the output, no cooldown verification needed
+        digitalWrite(outputs[indexOutput].arduinoPin, LOW);
+    }
+}
+
 
 void SensorsTask::printOutputState(unsigned char indexOutput)
 {

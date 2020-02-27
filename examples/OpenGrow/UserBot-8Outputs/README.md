@@ -20,5 +20,8 @@ Output 7 - Analog Output 0<br />
 Output 8 - Analog Output 1<br />
 
 <br />
+You can find the schematic below.<br />
+
+![Fritzing Schematic for UserBot Example](https://www.open-grow.co.uk/shop/img/opengrowimgs/schematics/description/Open-Grow-UserBot-8-Outputs.png)
 <br />
 

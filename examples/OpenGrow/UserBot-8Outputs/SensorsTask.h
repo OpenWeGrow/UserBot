@@ -26,6 +26,7 @@ public:
 	SensorsTask(void);
 	void GoSensorsTask(void);
     void printOutputState(unsigned char indexOutput);
+	void actOnOutput(unsigned char indexOutput);
 };
 
 #endif // 
