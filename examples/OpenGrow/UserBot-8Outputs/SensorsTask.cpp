@@ -24,47 +24,47 @@ unsigned char outputIndex2Act = 0;
 SensorsTask::SensorsTask(void)
 {
 	snsState = INIT_SENSORS;
-
-	//***********************  IO Config  *****************************//
-    /*Here you need to set your used pins as inputs or outputs*/
-	//pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
-    //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
-    
-    pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
-    
-    //Initialize the timer to verify backoff/cooldown feature
-    ticksOut1 = millis();
-    ticksOut2 = millis();
-    ticksOut3 = millis();
-    ticksOut4 = millis();
-    ticksOut5 = millis();
-    ticksOut6 = millis();
-    ticksOut7 = millis();
-    ticksOut8 = millis();
-//pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
-
 }
 
 void SensorsTask::GoSensorsTask(void)
 {
     //You can create has many states as you would like, just look at SensorsTask.h and change the enum states
     //Make sure you also implement the state on this file
-    //This example has a state to initialize, other to get the temperature from an analogue sensor, third one to poll all buttons and a fourth to print the data gathered
+    //This example has a state to initialize, and other to constantly check if any output changed
 	
-	snsState = ACT_ON_IOS;
+	//snsState = ACT_ON_IOS;
 	
 	
 	switch(snsState)
     {
 		case INIT_SENSORS:
             //Use this state in the machine to initialize any sensor you may need
+            
+            //***********************  IO Config  *****************************//
+            /*Here you need to set your used pins as inputs or outputs*/
+            //pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
+            //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
+            
+            
+            pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
+            pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
+
+            //Initialize the timer to verify backoff/cooldown feature
+            ticksOut1 = millis();
+            ticksOut2 = millis();
+            ticksOut3 = millis();
+            ticksOut4 = millis();
+            ticksOut5 = millis();
+            ticksOut6 = millis();
+            ticksOut7 = millis();
+            ticksOut8 = millis();
+            
 			snsState = ACT_ON_IOS;
 			break;
 	
@@ -73,7 +73,7 @@ void SensorsTask::GoSensorsTask(void)
             for(outputIndex2Act =0 ; outputIndex2Act<MAX_USER_OUTPUTS; outputIndex2Act++)
                 actOnOutput(outputIndex2Act); 
             
-			snsState = INIT_SENSORS;
+			snsState = ACT_ON_IOS;
 			break;      
 	}
 }
