@@ -23,13 +23,6 @@ int time= 0;
 SensorsTask::SensorsTask(void)
 {
 	snsState = INIT_SENSORS;
-
-	//***********************  IO Config  *****************************//
-    /*Here you need to set your used pins as inputs or outputs*/
-	pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
-    pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
-
-	pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);		
 }
 
 void SensorsTask::GoSensorsTask(void)
@@ -46,7 +39,14 @@ void SensorsTask::GoSensorsTask(void)
 	switch(snsState)
     {
 		case INIT_SENSORS:
+            
 			//Use this state in the machine to initialize any sensor you may need
+            //***********************  IO Config  *****************************//
+            /*Here you need to set your used pins as inputs or outputs*/
+            pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
+            pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
+            pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);		
+            
 			snsState = GET_TEMP;
 			break;
 		case GET_TEMP:

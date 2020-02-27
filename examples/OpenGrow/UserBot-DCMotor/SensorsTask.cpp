@@ -16,18 +16,18 @@ unsigned char stMachineExternalControl = 0x00;
 
 SensorsTask::SensorsTask(void)
 {
-	snsState = INIT_SENSORS;
+	snsState = INIT_OUTPUTS;
 
 	//***********************  IO Config  *****************************//
     /*Here you need to set your used pins as inputs or outputs*/
-	pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);		
+	
 }
 
 void SensorsTask::GoSensorsTask(void)
 {
     //You can create has many states as you would like, just look at SensorsTask.h and change the enum states
     //Make sure you also implement the state on this file
-    //This example has a state to initialize, other to act on the output
+    //This example has two states to initialize outputs and inputs, and other to act on the output
 	if(stMachineExternalControl)
 	{
 		stMachineExternalControl = 0x00;
@@ -36,6 +36,12 @@ void SensorsTask::GoSensorsTask(void)
 	
 	switch(snsState)
     {
+        case INIT_OUTPUTS:
+			//Use this state in the machine to initialize any sensor you may need
+            pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);		
+			snsState = INIT_SENSORS;
+			break;
+            
 		case INIT_SENSORS:
 			//Use this state in the machine to initialize any sensor you may need
 			snsState = ACT_ON_IOS;

@@ -10,7 +10,8 @@
 #define __SENSORSTASK_H__
 // ENUM used in the switch cases from SensorsTask.cpp (UserBot folder)
 enum sensorsMachineState {
-  INIT_SENSORS = 0,
+  INIT_OUTPUTS = 0,
+  INIT_SENSORS,
   ACT_ON_IOS
 };
 extern sensorsMachineState snsState;
