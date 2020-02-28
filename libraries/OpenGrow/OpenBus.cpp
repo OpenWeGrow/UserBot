@@ -12,6 +12,7 @@
 #include <EEPROM.h>
 #include "ComsTask.h"
 
+
 unsigned char dataInLenght = 0;
 unsigned char dataOutLenght = 0;
 unsigned char validAction=false;
@@ -243,7 +244,23 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 								dataOut[dataOutLenght++] = ucOBSuccess;
 								dataOut[dataOutLenght++] = per_type;
 								dataOut[dataOutLenght++] = per;
-								dataOut[dataOutLenght++] = outputs[per].value;
+                                
+                                if(reversedOutputs)
+                                {
+                                
+                                    if(outputs[per].value > 0)
+                                    {                                     
+                                        dataOut[dataOutLenght++] = 0;
+                                    }
+                                    else
+                                    {                                      
+                                       dataOut[dataOutLenght++] = 255;
+                                    }
+                                }
+                                else                                    
+                                    dataOut[dataOutLenght++] = outputs[per].value;
+                               
+
 								validAction = true;
 							}
 							else
@@ -307,12 +324,42 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 							per_type = dataIn[4];
 
 							if(per_type == PERIPHERAL_OUTPUT && outputs[per].type != 0x00)
-							{
-								outLastValue = outputs[per].value;
-								outputs[per].value = dataIn[6];
+							{	
+                                if(reversedOutputs)
+                                {
+                                    if(outputs[per].value==0)
+                                    {
+                                        outLastValue = 255;
+                                    }
+                                    else
+                                    {
+                                        outLastValue = 0;
+                                    }
 
-								if(dataIn[7]==0x00)
+                                    if(dataIn[6]>0)
+                                    {
+                                        outputs[per].value = 0;
+                                    }
+                                    else
+                                    {
+                                        outputs[per].value = 255;
+                                    }
+                                }                                    
+                                else
+                                {
+                                    outLastValue = outputs[per].value;
+                                    outputs[per].value = dataIn[6];                                
+                                }                                
+
+
+								//outputs[per].value = dataIn[6];
+                                //#ifdef OUTPUTS_REVERSED
+                                   // if(dataIn[7]!=0x00)
+                                //#else
+                                if(dataIn[7]==0x00)
+                                //#endif								
 								{
+                                    //Serial.println("Checking Ticks...");
 									//Check if we need to back off in case of ON action
 									switch(per)
 									{                                       
@@ -463,8 +510,9 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 									resetTicksBackoff = true;  
 									//Serial.println("Force On");
 								}
-								//If ON, see the validation of the timers
-								if(outputs[per].value>0)
+							
+                                if((reversedOutputs&&outputs[per].value==0) ||(!reversedOutputs&&outputs[per].value>0))
+                               
 								{
 									//Serial.println("Output was on");
 									if(resetTicksBackoff)
@@ -522,21 +570,33 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 												break; 
 										}
 
-									   outputs[per].value = 0xFF;
+                                        if(reversedOutputs)                                
+                                            outputs[per].value = 0x00;
+                                        else
+                                            outputs[per].value = 0xFF;
+                                        
+									   
 									   validOnOff = true;
 									}
 									else
 									{
+                                        
 										Serial.println("BF");
-										outputs[per].value = 0;
+                                        if(reversedOutputs)    
+                                            outputs[per].value = 255;
+                                        else
+                                            outputs[per].value = 0;
+                                     
 										validOnOff = false;
 									}
 								}
 								else
 								{
-									//If the output was ON, we reset the timers
-									if(outLastValue > 0)
+                                    //Serial.println("Reseting Timer by ON");
+								
+                                    if(outLastValue > 0) 
 									{
+                                            //Serial.println("Reseting Timer by ON True");
 										switch(per)
 										{
 											case OUTPUT_INDEX0:
@@ -571,8 +631,12 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 												break;
 										}
 									}                                    
-
-									digitalWrite(aid, LOW);
+                                    if(reversedOutputs)    
+                                        digitalWrite(aid, HIGH);
+                                    else
+                                        digitalWrite(aid, LOW);   
+                                  
+									
 									validOnOff = true;
 								}
 

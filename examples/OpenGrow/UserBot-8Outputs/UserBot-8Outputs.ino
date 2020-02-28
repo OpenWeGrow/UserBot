@@ -88,6 +88,45 @@ void setup(void)
 	outputs[OUTPUT_INDEX8].type = OPEN_DEFAULT;	//Unused Output
 	outputs[OUTPUT_INDEX9].type = OPEN_DEFAULT;	//Unused Output
 
+    //Uncomment this line when your ON is LOW and OFF is HIGH
+    //vComsTask.vSetReversedOutputs(true);
+
+    if(reversedOutputs)
+    {
+        digitalWrite(outputs[OUTPUT_INDEX0].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX1].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX2].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX3].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX4].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX5].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX6].arduinoPin, HIGH);
+        digitalWrite(outputs[OUTPUT_INDEX7].arduinoPin, HIGH);
+
+        outputs[OUTPUT_INDEX0].value = 255;
+        outputs[OUTPUT_INDEX1].value = 255;    
+        outputs[OUTPUT_INDEX2].value = 255;
+        outputs[OUTPUT_INDEX3].value = 255; 
+        outputs[OUTPUT_INDEX4].value = 255;
+        outputs[OUTPUT_INDEX5].value = 255; 
+        outputs[OUTPUT_INDEX6].value = 255;
+        outputs[OUTPUT_INDEX7].value = 255; 
+
+    }  
+
+    //***********************  IO Config  *****************************//
+    /*Here you need to set your used pins as inputs or outputs*/
+    //pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
+    //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT); 
+      
+    pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
+
 	Serial.begin(230400);
 	Serial.setTimeout(10);
 

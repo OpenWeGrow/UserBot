@@ -63,6 +63,8 @@ unsigned short memadd = 0;
 unsigned short d = 0;
 #endif
 
+bool reversedOutputs = false; //Used to reverse polarity of Output On or Output Off
+
 OpenBus vOpenBus;
 
 //Memory init stuff
@@ -75,6 +77,11 @@ long randNumber;
 ComsTask::ComsTask(void)
 {
 	mState = INIT;
+}
+
+void ComsTask::vSetReversedOutputs(bool newReversedOutputs)
+{
+    reversedOutputs = newReversedOutputs;
 }
 
 void ComsTask::vGoComsTask(RF24 comPort)

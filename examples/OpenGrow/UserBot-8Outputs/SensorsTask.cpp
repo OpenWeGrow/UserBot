@@ -39,21 +39,8 @@ void SensorsTask::GoSensorsTask(void)
     {
 		case INIT_SENSORS:
             //Use this state in the machine to initialize any sensor you may need
+                    
             
-            //***********************  IO Config  *****************************//
-            /*Here you need to set your used pins as inputs or outputs*/
-            //pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);
-            //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);
-            
-            
-            pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
-            pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
 
             //Initialize the timer to verify backoff/cooldown feature
             ticksOut1 = millis();
@@ -138,7 +125,7 @@ void SensorsTask::actOnOutput(unsigned char indexOutput)
             
     }
     
-    
+
     if(outputs[indexOutput].value>0)
     {
         //If not in cooldown turn on the output
@@ -154,26 +141,89 @@ void SensorsTask::actOnOutput(unsigned char indexOutput)
     {
         //Shutdown the output, no cooldown verification needed
         digitalWrite(outputs[indexOutput].arduinoPin, LOW);
-    }
+    }   
+    
 }
 
 
 void SensorsTask::printOutputState(unsigned char indexOutput)
 {
+    
     Serial.print(F("Output "));
     Serial.print(indexOutput+1,DEC);
     Serial.print(F("- "));
     
-    if(outputs[indexOutput].value == 0)
+        if(reversedOutputs)
+        {
+            if(outputs[indexOutput].value == 0)
+            {
+                Serial.print(F("ON Speed-"));
+            }
+            else
+            {
+                Serial.print(F("OFF Speed-"));
+            }
+        }
+        else
+        {
+            if(outputs[indexOutput].value == 0)
+            {
+                Serial.print(F("OFF Speed-"));
+            }
+            else
+            {
+                Serial.print(F("ON Speed-"));
+            }		
+        }
+    
+    Serial.print(outputs[indexOutput].speed,DEC);
+    Serial.print(" CoolDown: ");
+    
+    switch(indexOutput)
     {
-        Serial.print(F("OFF Speed-"));
+        case OUTPUT_INDEX0:
+            Serial.print(minutes2BackOffOut1);
+            Serial.println(" minutes");
+            break;
+            
+        case OUTPUT_INDEX1:
+            Serial.print(minutes2BackOffOut2);
+            Serial.println(" minutes");
+            break;            
+            
+        case OUTPUT_INDEX2:
+            Serial.print(minutes2BackOffOut3);
+            Serial.println(" minutes");
+            break;
+            
+            
+        case OUTPUT_INDEX3:
+            Serial.print(minutes2BackOffOut4);
+            Serial.println(" minutes");
+            break;
+            
+        case OUTPUT_INDEX4:
+            Serial.print(minutes2BackOffOut5);
+            Serial.println(" minutes");
+            break;
+            
+        case OUTPUT_INDEX5:
+            Serial.print(minutes2BackOffOut6);
+            Serial.println(" minutes");
+            break;
+            
+        case OUTPUT_INDEX6:
+            Serial.print(minutes2BackOffOut7);
+            Serial.println(" minutes");
+            break;
+            
+        case OUTPUT_INDEX7:
+            Serial.print(minutes2BackOffOut8);
+            Serial.println(" minutes");
+            break;
     }
-    else
-    {
-        Serial.print(F("ON Speed-"));
-    }		
-    Serial.println(outputs[indexOutput].speed,DEC);
-    Serial.println("");
+    
+  
 
 }
 

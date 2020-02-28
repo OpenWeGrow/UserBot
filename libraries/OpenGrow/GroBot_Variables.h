@@ -23,11 +23,12 @@
 //Firmware v1.0.0.8 - Stack configuration changed so its configuration is a bit more simple - Cleared RS485 defines
 //Firmware v1.1.0.8 - Removed Timer 1, clean up of RF24 comments, updated firmware to support HW version, added external SensorsTask state machine control, GroBot Variables clean up
 //Firmware v1.1.0.9 - Removed Prototypes form EEPPROM_Utils that where not created - 
+//Firmware v1.1.0.10 - Output States can now be inverted 
 
 #define FW_1  1
 #define FW_2  1
 #define FW_3  0
-#define FW_4  9
+#define FW_4  10
 
 //Restart after 60 seconds without any communications with a master
 #define SHUTDOWN_TIMEOUT 60000
@@ -154,6 +155,9 @@ extern struct stOUTPUT outputs[MAX_OUTPUTS];
 //CRC Stuff
 extern CRC crc;
 extern unsigned char crc16 [2];
+
+//Reversed outputs variables
+extern bool reversedOutputs;
 
 //Module Default Info
 #define OPEN_DEFAULT					0x00

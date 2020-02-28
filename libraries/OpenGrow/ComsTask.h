@@ -57,6 +57,7 @@ class ComsTask
 		ComsTask(void);
 		void(* resetFuncCom) (void) = 0; //declare reset function @ address 0
 		void vGoComsTask(RF24 comPort);
+        void vSetReversedOutputs(bool newReversedOutputs);
 };
 
 #endif // __COMSTASK_H__
