@@ -22,8 +22,8 @@
 //Firmware V1.0.0.7 - Code CleanUp
 //Firmware v1.0.0.8 - Stack configuration changed so its configuration is a bit more simple - Cleared RS485 defines
 //Firmware v1.1.0.8 - Removed Timer 1, clean up of RF24 comments, updated firmware to support HW version, added external SensorsTask state machine control, GroBot Variables clean up
-//Firmware v1.1.0.9 - Removed Prototypes form EEPPROM_Utils that where not created - 
-//Firmware v1.1.0.10 - Output States can now be inverted 
+//Firmware v1.1.0.9 - Removed Prototypes form EEPPROM_Utils that where not created
+//Firmware v1.1.0.10 - Output States can now be inverted
 
 #define FW_1  1
 #define FW_2  1
@@ -38,7 +38,7 @@
 #define TYPE_OUTPUT				0x01
 
 //Possible Input Types
-#define OTHER_INPUT				0x01
+#define OTHER_SWITCH_INPUT		0x01
 #define DIG_TEMPERATURE			0x02
 #define WATER_TEMPERATURE		0x03
 #define HUMIDITY				0x04
@@ -59,6 +59,7 @@
 #define SOIL_TEMPERATURE		0x13
 #define MOISTURE_CAP			0x14
 #define PRESSURE				0x15
+#define OTHER_SENSOR_INPUT		0x16
 
 //Possible Output Types
 #define OTHER_OUTPUT			0x01
