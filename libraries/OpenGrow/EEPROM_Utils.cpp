@@ -197,6 +197,25 @@ void EEPROMUtils::saveModuleConfig(unsigned char saveWhat)
 		case OUT4_BACKOFF_TIME:
 			vSaveOutBackOff(4);
 			break;
+        case OUT5_BACKOFF_TIME:
+            vSaveOutBackOff(5);
+            break;
+        case OUT6_BACKOFF_TIME:
+            vSaveOutBackOff(6);
+            break;
+        case OUT7_BACKOFF_TIME:
+            vSaveOutBackOff(7);
+            break;
+        case OUT8_BACKOFF_TIME:
+            vSaveOutBackOff(8);
+            break;
+        case OUT9_BACKOFF_TIME:
+            vSaveOutBackOff(9);
+            break;
+        case OUT10_BACKOFF_TIME:
+            vSaveOutBackOff(10);
+            break;
+            
 	}
 }
 
@@ -320,6 +339,80 @@ void EEPROMUtils::vReadOutBackOff(unsigned char output)
 			break;
         case 10:
             eeprom_read_block(&minutes2BackOffOut10, (void *)(EEPROM_OUT10_BACKOFF_TIME), sizeof(unsigned char));
+			break;
+	}
+}
+
+void EEPROMUtils::vSaveSpeed(unsigned char output)
+{
+	switch(output)
+	{
+		case 1:
+			eeprom_write_block(&outputs[0].speed, (void *) (OUT1_SPEED), sizeof(unsigned char));
+			break;
+		case 2:
+			eeprom_write_block(&outputs[1].speed, (void *)(OUT2_SPEED), sizeof(unsigned char));
+			break;
+		case 3:
+			eeprom_write_block(&outputs[2].speed, (void *)(OUT3_SPEED), sizeof(unsigned char));
+			break;
+		case 4:
+			eeprom_write_block(&outputs[3].speed, (void *)(OUT4_SPEED), sizeof(unsigned char));
+			break;
+		case 5:
+			eeprom_write_block(&outputs[4].speed, (void *)(OUT5_SPEED), sizeof(unsigned char));
+			break;
+		case 6:
+			eeprom_write_block(&outputs[5].speed, (void *)(OUT6_SPEED), sizeof(unsigned char));
+			break;
+		case 7:
+			eeprom_write_block(&outputs[6].speed, (void *)(OUT7_SPEED), sizeof(unsigned char));
+			break;
+		case 8:
+			eeprom_write_block(&outputs[7].speed, (void *)(OUT8_SPEED), sizeof(unsigned char));
+			break;
+		case 9:
+			eeprom_write_block(&outputs[8].speed, (void *)(OUT9_SPEED), sizeof(unsigned char));
+			break;
+		case 10:
+			eeprom_write_block(&outputs[9].speed, (void *)(OUT10_SPEED), sizeof(unsigned char));
+			break;
+	}
+}
+
+void EEPROMUtils::vReadSpeed(unsigned char output)
+{
+	switch(output)
+	{
+        case 1:
+            eeprom_read_block(&outputs[0].speed, (void *) (OUT1_SPEED), sizeof(unsigned char));
+			break;
+        case 2:
+            eeprom_read_block(&outputs[1].speed, (void *) (OUT2_SPEED), sizeof(unsigned char));
+			break;
+        case 3:
+            eeprom_read_block(&outputs[2].speed, (void *) (OUT3_SPEED), sizeof(unsigned char));
+			break;
+        case 4:
+            eeprom_read_block(&outputs[3].speed, (void *) (OUT4_SPEED), sizeof(unsigned char));
+			break;
+        case 5:
+            eeprom_read_block(&outputs[4].speed, (void *) (OUT5_SPEED), sizeof(unsigned char));
+			break;
+        case 6:
+            eeprom_read_block(&outputs[5].speed, (void *) (OUT6_SPEED), sizeof(unsigned char));
+			break;
+        case 7:
+            eeprom_read_block(&outputs[6].speed, (void *) (OUT7_SPEED), sizeof(unsigned char));
+			break;
+        case 8:
+            eeprom_read_block(&outputs[7].speed, (void *) (OUT8_SPEED), sizeof(unsigned char));
+			break;
+        case 9:
+            eeprom_read_block(&outputs[8].speed, (void *) (OUT9_SPEED), sizeof(unsigned char));
+			break;
+        case 10:
+            eeprom_read_block(&outputs[9].speed, (void *) (OUT10_SPEED), sizeof(unsigned char));
 			break;
 	}
 }

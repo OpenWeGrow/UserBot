@@ -352,14 +352,19 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
                                 }                                
 
 
-								//outputs[per].value = dataIn[6];
-                                //#ifdef OUTPUTS_REVERSED
-                                   // if(dataIn[7]!=0x00)
-                                //#else
-                                if(dataIn[7]==0x00)
-                                //#endif								
+                                if(outLastValue == outputs[per].value)
+                                {
+                                    //Serial.println("Same State");
+                                    dataOut[dataOutLenght++] = ucOBSuccess;
+                                    dataOut[dataOutLenght++] = per_type;
+                                    dataOut[dataOutLenght++] = per;
+                                    validAction = true;
+                                    break;
+                                }
+								
+                                if(dataIn[7]==0x00)                             							
 								{
-                                    //Serial.println("Checking Ticks...");
+                                   
 									//Check if we need to back off in case of ON action
 									switch(per)
 									{                                       
@@ -369,12 +374,10 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 
 											if(ticksToEndBackOff > (MILLIS_PER_MINUTE * minutes2BackOffOut1) )
 											{
-												//Serial.println("Reset Ticks");
 												resetTicksBackoff = true;
 											}
 											else
 											{
-												//Serial.println("No Tick Reset");
 												resetTicksBackoff = false;
 											}
 											break;
@@ -508,13 +511,12 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 								else
 								{
 									resetTicksBackoff = true;  
-									//Serial.println("Force On");
+									Serial.println("Force On");
 								}
 							
-                                if((reversedOutputs&&outputs[per].value==0) ||(!reversedOutputs&&outputs[per].value>0))
-                               
+                                if((reversedOutputs&&outputs[per].value==0) ||(!reversedOutputs&&outputs[per].value>0))                               
 								{
-									//Serial.println("Output was on");
+									
 									if(resetTicksBackoff)
 									{
 										switch(per)
@@ -594,9 +596,9 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 								{
                                     //Serial.println("Reseting Timer by ON");
 								
-                                    if(outLastValue > 0) 
+                                    if((!reversedOutputs&&outLastValue > 0) || (reversedOutputs && outLastValue==0x00)) 
 									{
-                                            //Serial.println("Reseting Timer by ON True");
+                                        Serial.println("Reseting Timer by ON True");
 										switch(per)
 										{
 											case OUTPUT_INDEX0:
@@ -687,13 +689,13 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
                             
                             if(per_type==PERIPHERAL_OUTPUT)
                             {	
-                                vEEPROMUtils.vReadCalib(per+3);  
+                                vEEPROMUtils.vReadSpeed(per+1);  
                                 
                                 if(outputs[per].speed != dataIn[6])
                                 {
                                     outputs[per].speed = dataIn[6];
                                     CalibParams.timeMax = outputs[per].speed;   
-                                    vEEPROMUtils.vSaveCalib(per+3);
+                                    saveModule= OUT_SPEED + per;
                                 }
                                 dataOut[dataOutLenght++]=ucOBSuccess;
                                 dataOut[dataOutLenght++]=per_type;
@@ -723,8 +725,7 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 
 							if(per_type==PERIPHERAL_OUTPUT /*&& outputs[per].type != 0x00*/)
 							{	
-								vEEPROMUtils.vReadCalib(per+3);
-								outputs[per].speed = CalibParams.timeMax;
+								vEEPROMUtils.vReadSpeed(per+1); 
 								dataOut[dataOutLenght++]=ucOBSuccess;	
 								dataOut[dataOutLenght++]=per_type;
 								dataOut[dataOutLenght++]=per;	

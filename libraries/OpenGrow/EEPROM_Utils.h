@@ -39,6 +39,19 @@
 #define OUT9_BACKOFF_TIME  				0x30
 #define OUT10_BACKOFF_TIME				0x31
 
+#define OUT_SPEED       				0x32
+#define OUT1_SPEED       				0x32
+#define OUT2_SPEED       				0x33
+#define OUT3_SPEED       				0x34
+#define OUT4_SPEED       				0x35
+#define OUT5_SPEED       				0x36
+#define OUT6_SPEED       				0x37
+#define OUT7_SPEED       				0x38
+#define OUT8_SPEED       				0x39
+#define OUT9_SPEED       				0x3A
+#define OUT10_SPEED       				0x3B
+
+
 #define MILLIS_PER_MINUTE 60000
 
 struct parameters_Moisture
@@ -50,6 +63,17 @@ struct parameters_Moisture
 };
 
 extern parameters_Moisture CalibParams;
+
+extern unsigned char minutes2BackOffOut1;
+extern unsigned char minutes2BackOffOut2;
+extern unsigned char minutes2BackOffOut3;
+extern unsigned char minutes2BackOffOut4;
+extern unsigned char minutes2BackOffOut5;
+extern unsigned char minutes2BackOffOut6;
+extern unsigned char minutes2BackOffOut7;
+extern unsigned char minutes2BackOffOut8;
+extern unsigned char minutes2BackOffOut9;
+extern unsigned char minutes2BackOffOut10;
 
 extern unsigned char minutes2BackOffOut1;
 extern unsigned char minutes2BackOffOut2;
@@ -75,6 +99,8 @@ class EEPROMUtils
 		void vSaveShutdown();
 		void vSaveOutBackOff(unsigned char output);
 		void vReadOutBackOff(unsigned char output);
+        void vSaveSpeed(unsigned char output);
+		void vReadSpeed(unsigned char output);
 		void dumpEEPROM ();
 };
 #endif //EEPROM_UTILS_h
