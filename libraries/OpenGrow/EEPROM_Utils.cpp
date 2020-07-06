@@ -12,6 +12,9 @@
 #include "EEPROM_Utils.h"
 #include "ComsTask.h"
 
+#define INPUT_BASE_NAME "Input"
+#define OUTPUT_BASE_NAME "Output"
+
 parameters_Moisture CalibParams = {700,400,0.33};
 
 unsigned char minutes2BackOffOut1 = 0;
@@ -52,27 +55,12 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 
 	strcpy(name, "User Bot");
 	
-	strcpy(inputs[INPUT_INDEX0].name, "Input 1");
-	strcpy(inputs[INPUT_INDEX1].name, "Input 2");
-	strcpy(inputs[INPUT_INDEX2].name, "Input 3");
-	strcpy(inputs[INPUT_INDEX3].name, "Input 4");
-	strcpy(inputs[INPUT_INDEX4].name, "Input 5");
-	strcpy(inputs[INPUT_INDEX5].name, "Input 6");
-	strcpy(inputs[INPUT_INDEX6].name, "Input 7");
-	strcpy(inputs[INPUT_INDEX7].name, "Input 8");
-	strcpy(inputs[INPUT_INDEX8].name, "Input 9");
-	strcpy(inputs[INPUT_INDEX9].name, "Input 10");
+    for(ei=0; ei < MAX_INPUTS; ei++) //Clear All Inputs to default Value
+	{	
+        strcpy(inputs[ei].name, INPUT_BASE_NAME);	
+        strcpy(outputs[OUTPUT_INDEX0].name, OUTPUT_BASE_NAME);
+    }
 	
-	strcpy(outputs[OUTPUT_INDEX0].name, "Output 1");
-	strcpy(outputs[OUTPUT_INDEX1].name, "Output 2");
-	strcpy(outputs[OUTPUT_INDEX2].name, "Output 3");
-	strcpy(outputs[OUTPUT_INDEX3].name, "Output 4");
-	strcpy(outputs[OUTPUT_INDEX4].name, "Output 5");
-	strcpy(outputs[OUTPUT_INDEX5].name, "Output 6");
-	strcpy(outputs[OUTPUT_INDEX6].name, "Output 7");
-	strcpy(outputs[OUTPUT_INDEX7].name, "Output 8");
-	strcpy(outputs[OUTPUT_INDEX8].name, "Output 9");
-	strcpy(outputs[OUTPUT_INDEX9].name, "Output 10");
 	
 	//If you need calibration parameters you can use the structure below to save those parameters on the EEPROM
 	CalibParams.timeMax = 700;
@@ -115,7 +103,7 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 	
 	eeprom_write_block(name, (void *)(EEPROM_BOT_NAME), sizeof(name)); 
 	eeprom_write_block(fwVersion, (void *)(FW_EEPROM_START), sizeof(fwVersion));
-	Serial.println(F("RST"));
+	//Serial.println(F("RST"));
 }
 
 void EEPROMUtils::dumpEEPROM ()
@@ -126,7 +114,6 @@ void EEPROMUtils::dumpEEPROM ()
 		Serial.println(EEPROM.read(ei), HEX);
 	}
 }
-
 void EEPROMUtils::vSaveSlaveAdress(unsigned char newSlaveAdress)
 {
 	EEPROM.write(EEPRROM_SLAVEADDRESS, newSlaveAdress);
