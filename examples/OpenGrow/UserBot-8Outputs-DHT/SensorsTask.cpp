@@ -39,7 +39,7 @@ void SensorsTask::GoSensorsTask(void)
 {
     //You can create has many states as you would like, just look at SensorsTask.h and change the enum states
     //Make sure you also implement the state on this file
-    //This example has a state to initialize, and other to constantly check if any output changed
+    //This example has a state to initialize (INIT_SENSORS), another that will check the sensor (CHECK_DHT) and a last on to constantly check if any output changed
 	
 	//snsState = ACT_ON_IOS;
 	
@@ -47,8 +47,8 @@ void SensorsTask::GoSensorsTask(void)
 	switch(snsState)
     {
 		case INIT_SENSORS:
-            //Use this state in the machine to initialize any sensor you may need
-                    
+		
+            //Use this state in the machine to initialize any sensor you may need                 
             
 
             //Initialize the timer to verify backoff/cooldown feature
@@ -65,15 +65,8 @@ void SensorsTask::GoSensorsTask(void)
 			break;
 	
         case CHECK_DHT:
-            //noInterrupts();
-            handleDHT22Temp();
-           // interrupts();
-            /*Serial.print(F("Temp: ")); 
-            Serial.print(inputs[INPUT_INDEX0].value); 
-            Serial.print(F("C "));  
-            Serial.print(F("Humi:")); 
-            Serial.print(inputs[INPUT_INDEX1].value); 
-            Serial.println(F("%")); */
+            
+            handleDHT22Temp();           
             
             snsState = ACT_ON_IOS;
             break;
@@ -170,11 +163,9 @@ void SensorsTask::actOnOutput(unsigned char indexOutput)
 
 void SensorsTask::handleDHT22Temp()
 {
-  
- //sensors_event_t event;
- // Serial.println(F("Get Data 1"));
+
   temp = dht.readTemperature();
- // Serial.println(F("Get Data 2"));
+
   if (isnan(temp))
   {  
       Serial.println(F("Error temp"));
@@ -184,17 +175,13 @@ void SensorsTask::handleDHT22Temp()
   {      
     if(temp > 80 || temp < -40) //Temperature value has to be between -40 and 80
     {
-      //Serial.println(F("Temperature out of bounds!"));
+      Serial.println(F("Temperature out of bounds!"));
       dhtErrorCount++; 
     }
     else
     {   
         if(validateNewValue(inputs[INPUT_INDEX0].value,temp,10)||dhtTempInternalCount >= 5) // and connot have a deviation higher than 20
-        {
-           /* if(!dhtTempInternalCount>=5)
-            {
-               //Serial.println(F("Variation Ok")); 
-            }*/
+        {           
             dhtTempInternalCount=0;
             inputs[INPUT_INDEX0].value += (double)temp;
             inputs[INPUT_INDEX0].value = inputs[INPUT_INDEX0].value/2;
@@ -204,14 +191,13 @@ void SensorsTask::handleDHT22Temp()
         else
         {
           dhtTempInternalCount++;
-          //Serial.println(F("Temperature variation too high!"));
           dhtErrorCount++;
         }
         
     }
   }
   
-  // Get humidity event and print its value.
+
   temp = dht.readHumidity();
   
   if (isnan(temp))
@@ -223,21 +209,13 @@ void SensorsTask::handleDHT22Temp()
   {
     if(temp > 100 || temp < 0 ) //Humidity value has to be between 0 and 100
     {
-      //Serial.println(F("Humidity out of bounds!"));
+      Serial.println(F("Humidity out of bounds!"));
       dhtErrorCount++; 
     }
     else {
    
         if(validateNewValue(inputs[INPUT_INDEX1].value,temp,20)||dhtHumiInternalCount >= 5) // and connot have a deviation higher than 20
-        {
-           /* if(dhtHumiInternalCount>=5)
-            {
-                //Serial.println(F("Broke via counter!")); 
-            }
-            else
-            {
-                Serial.println(F("Variation Ok")); 
-            }*/
+        {          
             
             dhtHumiInternalCount = 0;        
             inputs[INPUT_INDEX1].value += (double)temp;
@@ -247,15 +225,10 @@ void SensorsTask::handleDHT22Temp()
         else
         {
           dhtHumiInternalCount++;
-          //Serial.println(F("Humidty variation too high!"));
           dhtErrorCount++;
         }
     }
   }
-  //Serial.println(F("Get Data 3"));
-  //dhtErrorCount++;
-  
-  
 }
 
 bool SensorsTask::validateNewValue(double latestValidRead, double newValue, double validationFactor)
@@ -307,38 +280,31 @@ void SensorsTask::printOutputState(unsigned char indexOutput)
             
         case OUTPUT_INDEX1:
             Serial.print(minutes2BackOffOut2);
-          //  Serial.println(" minutes");
             break;            
             
         case OUTPUT_INDEX2:
             Serial.print(minutes2BackOffOut3);
-            //Serial.println(" minutes");
             break;
             
             
         case OUTPUT_INDEX3:
             Serial.print(minutes2BackOffOut4);
-           // Serial.println(" minutes");
             break;
             
         case OUTPUT_INDEX4:
             Serial.print(minutes2BackOffOut5);
-            //Serial.println(" minutes");
             break;
             
         case OUTPUT_INDEX5:
             Serial.print(minutes2BackOffOut6);
-            //Serial.println(" minutes");
             break;
             
         case OUTPUT_INDEX6:
             Serial.print(minutes2BackOffOut7);
-            //Serial.println(" minutes");
             break;
             
         case OUTPUT_INDEX7:
             Serial.print(minutes2BackOffOut8);
-            //Serial.println(" minutes");
             break;
     }
     Serial.println(" m");

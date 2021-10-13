@@ -12,7 +12,7 @@
 #include "RF24.h"
 #include "GroBot_Variables.h"
 
-uint64_t pipes[6] = { 0xc886799aE0LL, 0xc886799aE1LL , 0xc886799aE2LL, 0xc886799aE3LL, 0xc886799aD4LL, 0xc886799aE5LL };
+uint64_t pipes[6] = { 0xc886799aE0LL, 0xc886799aE1LL , 0xc886799aE2LL, 0xc886799aE3LL, 0xc886799aE4LL, 0xc886799aE5LL };
   
 /****************************************************************************/
 //Communication pipes

@@ -55,8 +55,8 @@ void setup(void)
 	inputs[INPUT_INDEX8].arduinoPin = 0;	//Unused Input
 	inputs[INPUT_INDEX9].arduinoPin = 0;	//Unused Input
 	
-	inputs[INPUT_INDEX0].type = IO_NOT_CONNECTED;   //Unused Input
-	inputs[INPUT_INDEX1].type = IO_NOT_CONNECTED;   //Unused Input
+	inputs[INPUT_INDEX0].type = DIG_TEMPERATURE;//Unused Input
+	inputs[INPUT_INDEX1].type = HUMIDITY;       //Unused Input
 	inputs[INPUT_INDEX2].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX3].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX4].type = OPEN_DEFAULT;	//Unused Input
@@ -66,7 +66,7 @@ void setup(void)
 	inputs[INPUT_INDEX8].type = OPEN_DEFAULT;	//Unused Input
 	inputs[INPUT_INDEX9].type = OPEN_DEFAULT;	//Unused Input
 	
-	outputs[OUTPUT_INDEX0].arduinoPin = A2;  //Output 1
+	outputs[OUTPUT_INDEX0].arduinoPin = 3;  //Output 1
 	outputs[OUTPUT_INDEX1].arduinoPin = 4;	//Output 2
 	outputs[OUTPUT_INDEX2].arduinoPin = 5;	//Output 3
 	outputs[OUTPUT_INDEX3].arduinoPin = 6;	//Output 4
@@ -90,6 +90,23 @@ void setup(void)
 
     //Uncomment this line when your ON is LOW and OFF is HIGH
     //vComsTask.vSetReversedOutputs(true);
+	
+	//***********************  IO Config  *****************************//
+    /*Here you need to set your used pins as inputs or outputs*/
+    //pinMode(inputs[INPUT_INDEX0].arduinoPin, OUTPUT);   //Pin as Output
+    //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);    //Pin as Input
+    
+	pinMode(inputs[INPUT_INDEX0].arduinoPin, INPUT);    //Pin as Input
+	pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT);    //Pin as Input
+	
+    pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
+    pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
 
     if(reversedOutputs)
     {
@@ -112,20 +129,6 @@ void setup(void)
         outputs[OUTPUT_INDEX7].value = 255; 
 
     }  
-
-    //***********************  IO Config  *****************************//
-    /*Here you need to set your used pins as inputs or outputs*/
-    //pinMode(inputs[INPUT_INDEX0].arduinoPin, OUTPUT);   //DHT22 Pin
-    //pinMode(inputs[INPUT_INDEX1].arduinoPin, INPUT); 
-      
-    pinMode(outputs[OUTPUT_INDEX0].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX1].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX2].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX3].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX4].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX5].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX6].arduinoPin, OUTPUT);	
-    pinMode(outputs[OUTPUT_INDEX7].arduinoPin, OUTPUT);	
 
 	Serial.begin(230400);
 	Serial.setTimeout(10);
@@ -164,18 +167,11 @@ void loop(void)
 	if(!(serialNumber[4] == DEFAULT_SERIALNUMBER_4 && serialNumber[5] == DEFAULT_SERIALNUMBER_5 && serialNumber[6] == DEFAULT_SERIALNUMBER_6 && serialNumber[7] == DEFAULT_SERIALNUMBER_7))
 	{
 		//RF Task
-		vComsTask.vGoComsTask(radio);
-        //Serial.println("RFA");
+		vComsTask.vGoComsTask(radio);        
 	}
 
-
-	//UART Task
-    //noInterrupts();
-	
-   // Serial.println("RFB");
-	//IO Management Task
 	vSensorsTask.GoSensorsTask();
-  //  Serial.println("RFC");
+ 
 }
 
 //Timer Interrupt Handler
@@ -189,10 +185,8 @@ SIGNAL(TIMER1_COMPA_vect)
 
 		//If the serial Number is the default one, the module does not communicate and awaits a valid serial number definition
 		if((serialNumber[4] == DEFAULT_SERIALNUMBER_4 && serialNumber[5] == DEFAULT_SERIALNUMBER_5 && serialNumber[6] == DEFAULT_SERIALNUMBER_6 && serialNumber[7] == DEFAULT_SERIALNUMBER_7))
-		{	
-			//RF Task
-			//Serial.println("RFH");
-			//Serial.println("");
+		{			
+			Serial.println("RFH");			
 		}
 
 		//Dump output states in the UART		
