@@ -28,7 +28,7 @@
 #define FW_1  1
 #define FW_2  1
 #define FW_3  0
-#define FW_4  11
+#define FW_4  12
 
 //Restart after 60 seconds without any communications with a master
 #define SHUTDOWN_TIMEOUT 60000
