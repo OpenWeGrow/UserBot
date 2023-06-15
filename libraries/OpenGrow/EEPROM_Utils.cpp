@@ -35,6 +35,20 @@ EEPROMUtils::EEPROMUtils()
 
 }
 
+unsigned char EEPROMUtils::checkVersion(unsigned char * currentFWVersion, unsigned char * version2Check)
+{  
+    if (currentFWVersion[0] < version2Check[0]) return LOWER_VERSION;
+	if (currentFWVersion[0] > version2Check[0]) return HIGHER_VERSION;
+	if (currentFWVersion[1] < version2Check[1]) return LOWER_VERSION;
+	if (currentFWVersion[1] > version2Check[1]) return HIGHER_VERSION;
+	if (currentFWVersion[2] < version2Check[2]) return LOWER_VERSION;
+	if (currentFWVersion[2] > version2Check[2]) return HIGHER_VERSION;
+	if (currentFWVersion[3] < version2Check[3]) return LOWER_VERSION;
+	if (currentFWVersion[3] > version2Check[3]) return HIGHER_VERSION;
+
+	return EQUAL_VERSION;
+}
+
 void EEPROMUtils::resetGroBot2Defaults(void)
 {
 	//Reset EEPROM
@@ -52,8 +66,6 @@ void EEPROMUtils::resetGroBot2Defaults(void)
 
 	//You should define your sensor types and names here
 	EEPROM.write(EEPROM_BOT_TYPE, USERBOT); //Save Module Type
-
-	strcpy(name, "User Bot");
 	
     for(ei=0; ei < MAX_INPUTS; ei++) //Clear All Inputs to default Value
 	{	

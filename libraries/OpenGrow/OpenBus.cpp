@@ -35,6 +35,8 @@ extern unsigned char botType;
 extern unsigned short memadd;
 extern unsigned char botID;
 extern unsigned char reboot;
+unsigned char tempfwVersion [4];
+unsigned char hwVersion;
 
 OpenBus::OpenBus()
 {
@@ -52,8 +54,29 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
     unsigned char minutes2Backoff;
     unsigned char aid; 
 
-	comsOk = comPort.read_Frame(dataIn,channel); //Data sent ok so receive new frame
-	failCount = 0;
+    //1.1.0.13 its the minimum UserBot version to use the new 32byte coms.
+    //Your GroNode must be at least on FW 1.0.7.4 to support this. If not, downgrade your UserBot fw to 1.1.0.12
+    tempfwVersion[0]= 1;
+    tempfwVersion[1]= 1; 
+    tempfwVersion[2]= 0;
+    tempfwVersion[3]= 13;
+         
+    //Check if our FW is suitable for 32bytes frame or 256bytes frame
+    if(vEEPROMUtils.checkVersion(fwVersion,tempfwVersion)== HIGHER_VERSION || vEEPROMUtils.checkVersion(fwVersion,tempfwVersion)== EQUAL_VERSION)
+    {
+        if(channel == AUTH_CHANNEL)//Authentication communications are always in a 256 frame
+        {
+            comsOk = comPort.read_Frame(dataIn,channel); //Data sent ok so receive new frame
+        }
+        else //All other commands are compsed only of 32 bytes
+        {
+            comsOk = comPort.read_32bytes(dataIn,channel); //Data sent ok so receive new frame               
+        }
+    }
+    else
+    {
+        comsOk = comPort.read_Frame(dataIn,channel); //Data sent ok so receive new frame
+    }
 
 	if(comsOk)
 	{
@@ -977,9 +1000,32 @@ unsigned char OpenBus::usOpenBusReply(unsigned char * dataIn, unsigned char * da
 		}		
 		
 		if(areWeYourDroid)
-		{			
-            comsOk = comPort.write_Frame(dataOut,channel); //Send Frame       
+		{
 
+            //1.1.0.13 its the minimum UserBot version to use the new 32byte coms.
+            //Your GroNode must be at least on FW 1.0.7.4 to support this. If not, downgrade your UserBot fw to 1.1.0.12
+            tempfwVersion[0]= 1;
+            tempfwVersion[1]= 1; 
+            tempfwVersion[2]= 0;
+            tempfwVersion[3]= 13;
+                                
+            if(vEEPROMUtils.checkVersion(fwVersion,tempfwVersion)== HIGHER_VERSION || vEEPROMUtils.checkVersion(fwVersion,tempfwVersion)== EQUAL_VERSION)
+            {
+                if(channel == AUTH_CHANNEL)
+                {
+                    comsOk = comPort.write_Frame(dataOut,channel); //Send 256 bytes Frame
+                    //Serial.println("Auth Frame");
+                }
+                else
+                {
+                    comsOk = comPort.write_32bytes(dataOut,channel); //Send 32 bytes                            
+                }
+            } 
+            else
+            {
+                comsOk = comPort.write_Frame(dataOut,channel); //Send 256 bytes Frame                        
+            }
+           
 			if(comsOk && validAction)
 			{
 				if( saveModule!= 0x00)

@@ -51,6 +51,11 @@
 #define OUT9_SPEED       				0x3A
 #define OUT10_SPEED       				0x3B
 
+#define HIGHER_VERSION   0x01
+#define LOWER_VERSION    0x02
+#define EQUAL_VERSION    0x03
+#define ERROR_VERSION    0x04
+
 
 #define MILLIS_PER_MINUTE 60000
 
@@ -90,6 +95,7 @@ class EEPROMUtils
 {
 	public:
 		EEPROMUtils();
+        unsigned char checkVersion(unsigned char * currentFWVersion, unsigned char * version2Check);
 		void vSaveSlaveAdress(unsigned char newSlaveAdress);
 		void vSaveBotID(unsigned char newBotID);
 		void saveModuleConfig(unsigned char saveWhat);

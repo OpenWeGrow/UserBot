@@ -24,14 +24,18 @@
 //Firmware v1.1.0.8 - Removed Timer 1, clean up of RF24 comments, updated firmware to support HW version, added external SensorsTask state machine control, GroBot Variables clean up
 //Firmware v1.1.0.9 - Removed Prototypes form EEPPROM_Utils that where not created
 //Firmware v1.1.0.10 - Output States can now be inverted
+//Firmware v1.1.0.11 - Speed and BackOff are now fully implemented  - Solved bug, where, if edited the CoolDown time in an output that had persistency, would turn off and back on again.
+//Firmware v1.1.0.12 - Removed old commented code - Sensors now need to be initialized with a type different from IO_NOT_CONNECTED - RF channel for the 4th salve had a typo.
+//Firmware v1.1.0.13 - Added a new communication paradigm based on small frames
+
 
 #define FW_1  1
 #define FW_2  1
 #define FW_3  0
-#define FW_4  12
+#define FW_4  13
 
-//Restart after 60 seconds without any communications with a master
-#define SHUTDOWN_TIMEOUT 60000
+//Restart after 300 seconds (5 minutes) without any communications with a master
+#define SHUTDOWN_TIMEOUT 300000
 
 //Generic definition
 #define TYPE_INPUT				0x00
@@ -163,7 +167,7 @@ extern bool reversedOutputs;
 //Module Default Info
 #define OPEN_DEFAULT					0x00
 #define OPEN_GROWS_DEFAULT				0x00
-#define OPEN_MASTERID_DEFAULT			0x01
+#define OPEN_MASTERID_DEFAULT			0x05
 #define OPEN_BOT_ID_DEFAULT				0xFF
 #define OPEN_SLAVEADRESS_DEFAULT		0xFF
 #define ZERO_MINUTES					0x00

@@ -282,9 +282,11 @@ public:
    * @return True if the payload was delivered successfully false if not
    */
   bool write( const void* buf, uint8_t len );
+   
+  //Write single 32bytes
+  bool RF24::write_32bytes(unsigned char * buf, unsigned char channel);
   
-  //Frame should always be 256 bytes
-  
+  //Frame should always be 256 bytes  
   bool write_Frame( unsigned char * buf, unsigned char channel);
   /**
    * Test whether there are bytes available to be read
@@ -308,6 +310,8 @@ public:
    * @return True if the payload was delivered successfully false if not
    */
   bool read( void* buf, uint8_t len );
+  //Read 32bytes
+  unsigned char RF24::read_32bytes(unsigned char * buf, unsigned char channel);
   //Frame read is always 256 bytes
   unsigned char read_Frame(unsigned char * buf, unsigned char channel);
   /**

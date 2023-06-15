@@ -463,10 +463,82 @@ bool RF24::write( const void* buf, uint8_t len )
   return result;
 }
 
+bool RF24::write_32bytes(unsigned char * buf, unsigned char channel)
+{
+    //Serial.println(F("write_Frame_32bytes"));
+	bool frameResult = true; 
+	
+	uint32_t start_at = 0;
+	const uint32_t timeout_at = 150; //ms to wait for timeout
+    unsigned char temp [32];  //Temporary buffer used for 256bytes frame construction
+
+	stopListening();
+	openWritingPipe(pipes[channel]);
+    
+	//flush_tx();
+	// Begin the write
+	start_at = millis();
+	
+	while (( millis() - start_at < timeout_at ))
+	{
+	  //memcpy(temp,&buf[frameLenght],payloadSize);
+	  startWrite(buf,payloadSize);
+	  #ifdef DEBUGRF	
+		Serial.print(F("Sending Data: "));
+		Serial.print(temp[0],HEX);
+		for(RFi=1;RFi <payloadSize;RFi++)
+		{
+			Serial.print(temp[RFi],HEX);
+			Serial.print(F(":"));
+		}
+		 
+	  #endif
+	  // ------------
+	  // At this point we could return from a non-blocking write, and then call
+	  // the rest after an interrupt
+
+	  // Instead, we are going to block here until we get TX_DS (transmission completed and ack'd)
+	  // or MAX_RT (maximum retries, transmission failed).  Also, we'll timeout in case the radio
+	  // is flaky and we get neither.
+
+	  // IN the end, the send should be blocking.  It comes back in 60ms worst case, or much faster
+	  // if I tighted up the retry logic.  (Default settings will be 1500us.
+	  // Monitor the send
+	  uint8_t observe_tx;
+	  uint8_t status;
+	  uint32_t sent_at = millis();
+	  const uint32_t timeout = 150; //ms to wait for timeout
+	  do
+	  {
+		status = read_register(OBSERVE_TX,&observe_tx,1);
+		//IF_SERIAL_DEBUG(Serial.print(observe_tx,HEX));
+	  }
+	  while(!( status & ( _BV(TX_DS) | _BV(MAX_RT) ) ) && ( millis() - sent_at < timeout ));
+	  
+      whatHappened(tx_ok,tx_fail,ack_payload_available);       
+		
+	  if(tx_ok)
+	  {
+          //flush_tx();
+          break;			
+	  }
+	}
+
+	if(!( millis() - start_at < timeout_at ))
+    {
+        frameResult = false;
+    }
+	
+	//powerDown();
+	
+	flush_tx();
+    //startListening();
+	return frameResult;
+}
+
 bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 {
 	bool frameResult = true; 
-	//frameLenght = 0;   
 	uint32_t start_at = 0;
 	const uint32_t timeout_at = 1000; //ms to wait for timeout
     unsigned char temp [32];  //Temporary buffer used for 256bytes frame construction
@@ -482,16 +554,7 @@ bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 	{
 	  memcpy(temp,&buf[frameLenght],payloadSize);
 	  startWrite(temp,payloadSize);
-	  #ifdef DEBUGRF	
-		Serial.print(F("Sending Data: "));
-		Serial.print(temp[0],HEX);
-		for(RFi=1;RFi <payloadSize;RFi++)
-		{
-			Serial.print(temp[RFi],HEX);
-			Serial.print(F(":"));
-		}
-		 
-	  #endif
+	  
 	  // ------------
 	  // At this point we could return from a non-blocking write, and then call
 	  // the rest after an interrupt
@@ -524,19 +587,13 @@ bool RF24::write_Frame(unsigned char * buf, unsigned char channel)
 		frameLenght +=payloadSize;			
 	  }
 	
-	  flush_tx();
-	 
-	   
-	// Flush buffers (Is this a relic of past experimentation, and not needed anymore??)
-	//delay(2000);
+	  flush_tx();	
 	}
 
 	if(!( millis() - start_at < timeout_at ))
         frameResult = false;
 
-	// Power down
-	powerDown();
-
+    powerDown();
 	// Flush buffers (Is this a relic of past experimentation, and not needed anymore??)
 	flush_tx();
   
@@ -617,15 +674,65 @@ bool RF24::read( void* buf, uint8_t len )
   return read_register(FIFO_STATUS) & _BV(RX_EMPTY);
 }
 
+unsigned char RF24::read_32bytes(unsigned char * buf, unsigned char channel)
+{
+
+    unsigned char status;
+	uint32_t start_at = 0;
+	const uint32_t timeout_at = 1000; //ms to wait for timeout
+    unsigned char temp [32];  //Temporary buffer 
+  
+    memset(buf,0x00,sizeof(buf));
+ 
+	openReadingPipe(0,pipes[channel]);
+	startListening();
+
+	start_at = millis();
+	while((millis() - start_at < timeout_at))
+	{
+        while ( ! available() && (millis() - start_at < timeout_at));
+        
+        memset(temp,0x00,payloadSize);    
+        status = getDynamicPayloadSize();
+
+        if(!(status > 32 || status == 0))
+        {
+           read( temp, payloadSize );
+           memcpy(&buf[0],temp,payloadSize);          
+           break;           
+        }
+        else
+        {                
+            flush_rx();	
+        } 				
+		
+	}
+    
+	stopListening();
+	
+    
+	if(!(millis() - start_at < timeout_at))
+	{        
+        flush_rx();  
+		return false;
+	}
+	else
+	{
+        return true;
+	}
+ 
+}
+
 unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 {
     unsigned char status;
 	uint32_t start_at = 0;
 	const uint32_t timeout_at = 1000; //ms to wait for timeout
-    unsigned char temp [32];  //Temporary buffer used for 256bytes frame construction
+    unsigned char temp [32];  //Temporary buffer used for 256bytes frame construction   
     unsigned short frameLenght = 0; //Payload counter for frame reception/send
 
     memset(buf,0x00,sizeof(buf));
+
 	openReadingPipe(0,pipes[channel]);
 	startListening();
 
@@ -640,39 +747,38 @@ unsigned char RF24::read_Frame( unsigned char * buf, unsigned char channel)
 			{
 				start_at = millis();
 				
-				while(!(read_register(FIFO_STATUS) & _BV(RX_EMPTY)) && frameLenght<256)
+				while(!(read_register(FIFO_STATUS) & _BV(RX_EMPTY)) && frameLenght<256 && (millis() - start_at < timeout_at))
 				{									
 					memset(temp,0x00,payloadSize);                                
-                    status = getDynamicPayloadSize();
-                    read( temp, payloadSize );
-                    status = getDynamicPayloadSize();
-                     
-                    if(!(status > 32))
+                    status = getDynamicPayloadSize();                   
+                                        
+                    if(!(status > 64 || status == 0))
                     {
-                       memcpy(&buf[frameLenght],temp,payloadSize);
+                        read( temp, payloadSize );
+                        memcpy(&buf[frameLenght],temp,payloadSize);
                         frameLenght += payloadSize;
+                        start_at = millis();
                     }
                     else
                     {
-                        Serial.print(status,DEC);
                         flush_rx();	
                     } 
 				}
 			}
 		}
 	}
-	stopListening();
-	delay(5);
 	
 	if(!(millis() - start_at < timeout_at))
-	{       
-        flush_rx();       
+	{
+        
+        flush_rx();		
 		return false;
 	}
 	else
 	{
         return true;
-	} 
+	}
+ 
 }
 
 /****************************************************************************/
